@@ -1,49 +1,49 @@
-package pszerszenowicz.ChessGame;
+package pszerszenowicz.chess;
 
 import org.junit.Test;
-import pszerszenowicz.ChessGame.adapters.board.ChessBoardImpl;
-import pszerszenowicz.ChessGame.adapters.pieces.*;
-import pszerszenowicz.adapters.Player;
-import pszerszenowicz.domain.ports.board.Board;
+import pszerszenowicz.chess.adapters.board.ChessBoard;
+import pszerszenowicz.chess.adapters.piece.*;
+import pszerszenowicz.domain.adapters.Player;
+import pszerszenowicz.ports.board.Board;
 
 import static org.junit.Assert.*;
 
-public class ChessGameTests {
+public class ChessBoardTests {
 
     @Test
     public void boardIsSet() {
         //given
-        Board board = new ChessBoardImpl();
+        Board board = new ChessBoard();
         //when
         board.setBoard();
 
-        long piecesQuantity = board.getPieces().size();
+        long piecesQuantity = board.getPieceCoordinate().size();
 
-        Player white = board.getPlayerOne();
-        Player black = board.getPlayerTwo();
-        long whitePiecesQuantity = board.getPieces().values()
+        Player white = board.getWhite();
+        Player black = board.getBlack();
+        long whitePiecesQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece.getPlayer() == white)
                 .count();
-        long blackPiecesQuantity = board.getPieces().values()
+        long blackPiecesQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece.getPlayer() == black)
                 .count();
 
-        long pawnsQuantity = board.getPieces().values()
+        long pawnsQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece instanceof Pawn)
                 .count();
-        long rooksQuantity = board.getPieces().values()
+        long rooksQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece instanceof Rook)
                 .count();
-        long knightsQuantity = board.getPieces().values()
+        long knightsQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece instanceof Knight)
                 .count();
-        long bishopsQuantity = board.getPieces().values()
+        long bishopsQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece instanceof Bishop)
                 .count();
-        long queensQuantity = board.getPieces().values()
+        long queensQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece instanceof Queen)
                 .count();
-        long kingsQuantity = board.getPieces().values()
+        long kingsQuantity = board.getPieceCoordinate().values()
                 .stream().filter((piece) -> piece instanceof King)
                 .count();
         //Then
@@ -57,4 +57,6 @@ public class ChessGameTests {
         assertEquals(2, queensQuantity);
         assertEquals(2, kingsQuantity);
     }
+
+
 }
