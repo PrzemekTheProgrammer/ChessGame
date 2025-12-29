@@ -31,22 +31,22 @@ public class Pawn extends Piece {
 
         // Ruch do przodu
         possibleMoves.add(
-                moveForward(from, horizontalValue, verticalValue, verticalDir, board)
+                moveForward(horizontalValue, verticalValue, verticalDir, board)
         );
 
         // Bicie
         possibleMoves.addAll(
-                capture(from, horizontalValue, verticalValue, verticalDir, board)
+                capture(horizontalValue, verticalValue, verticalDir, board)
         );
 
         //Szarża
         possibleMoves.add(
-                charge(from, horizontalValue, verticalValue, verticalDir, board)
+                charge(horizontalValue, verticalValue, verticalDir, board)
         );
 
         //Bicie w locie
         possibleMoves.addAll(
-                enPassant(from, horizontalValue, verticalValue, verticalDir, board, color)
+                enPassant(horizontalValue, verticalValue, verticalDir, board, color)
         );
 
         possibleMoves.remove(null);
