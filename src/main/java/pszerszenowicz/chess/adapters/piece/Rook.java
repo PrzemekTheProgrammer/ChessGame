@@ -26,7 +26,6 @@ public class Rook extends Piece {
     @Override
     public Set<Move> getMoves(Board board) {
         Set<Move> possibleMoves = new HashSet<>();
-        PieceCoordinate from = this.getPieceCoordinate();
         int[] horizontalDir = {-1, 1, 0, 0};
         int[] verticalDir = {0, 0, -1, 1};
         for (int dir = 0; dir < 4; dir++) {

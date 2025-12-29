@@ -54,7 +54,7 @@ public class Pawn extends Piece {
         return possibleMoves;
     }
 
-    private Move moveForward(PieceCoordinate from, int horVal, int vertVal, int vertDir, Board board) {
+    private Move moveForward(int horVal, int vertVal, int vertDir, Board board) {
         PieceCoordinate newCoord = getCoordinate(horVal, vertVal  + vertDir);
         Piece existingPiece = board.getPieceCoordinate().get(newCoord);
         if (existingPiece == null) {
@@ -63,10 +63,10 @@ public class Pawn extends Piece {
         return null;
     }
 
-    private Set<Move> capture(PieceCoordinate from, int horVal, int vertVal, int vertDir, Board board) {
+    private Set<Move> capture(int horVal, int vertVal, int vertDir, Board board) {
         Set<Move> ret = new HashSet<>();
 
-        int horizontalDir[] = {-1, 1};
+        int[] horizontalDir = {-1, 1};
         for (int dir = 0; dir < 2; dir++) {
             int newHorVal = horVal + horizontalDir[dir];
             int newVertVal = vertVal + vertDir;
@@ -87,8 +87,8 @@ public class Pawn extends Piece {
         return ret;
     }
 
-    private Move charge(PieceCoordinate from, int horVal, int vertVal, int vertDir, Board board) {
-        Boolean charge = false;
+    private Move charge(int horVal, int vertVal, int vertDir, Board board) {
+        boolean charge = false;
         if (this.getPlayer().getPieceColor() == PieceColor.WHITE) {
             if (vertVal == 2) {
                 charge = true;
@@ -114,9 +114,9 @@ public class Pawn extends Piece {
         return null;
     }
 
-    private Set<Move> enPassant(PieceCoordinate from, int horVal, int vertVal, int vertDir, Board board, PieceColor color) {
-        Boolean enPassant = false;
-        int horizontalDir[] = {-1, 1};
+    private Set<Move> enPassant(int horVal, int vertVal, int vertDir, Board board, PieceColor color) {
+        boolean enPassant = false;
+        int[] horizontalDir = {-1, 1};
         Set<Move> ret = new HashSet<>();
 
         if (color == PieceColor.WHITE
@@ -127,8 +127,8 @@ public class Pawn extends Piece {
             enPassant = true;
         }
         if (enPassant) {
-            for (int hd = 0; hd < horizontalDir.length; hd++) {
-                int newHorVal = horVal + horizontalDir[hd];
+            for (int i : horizontalDir) {
+                int newHorVal = horVal + i;
                 if (newHorVal < 1 || newHorVal > 8)
                     break;
                 PieceCoordinate newCoord = getCoordinate(newHorVal, vertVal);
@@ -136,7 +136,7 @@ public class Pawn extends Piece {
                 if (existingPiece != null
                         && existingPiece.getPlayer().getPieceColor() != this.getPlayer().getPieceColor()
                         && existingPiece instanceof Pawn) {
-                    newCoord = getCoordinate(horVal + horizontalDir[hd], vertVal + vertDir
+                    newCoord = getCoordinate(horVal + i, vertVal + vertDir
                     );
                     Move move = new Move(this, newCoord);
                     move.addTag(MoveTags.EnPassant);

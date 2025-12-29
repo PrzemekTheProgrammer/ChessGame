@@ -29,7 +29,7 @@ public class PawnTest {
         Set<Move> pawnMoves = testedPiece.getMoves(board);
         //then
         assertEquals(1,pawnMoves.size());
-        assertEquals(pawnMoves.iterator().next().getTo(),B4);
+        assertEquals(B4, pawnMoves.iterator().next().getTo());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class PawnTest {
         List<MoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
         assertEquals(1,pawnMoves.size());
-        assertEquals(pawnMoves.iterator().next().getTo(),C3);
+        assertEquals(C3,pawnMoves.iterator().next().getTo());
         assertTrue(movesTags.contains(MoveTags.Capture));
     }
 

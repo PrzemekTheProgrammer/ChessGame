@@ -8,8 +8,8 @@ import java.util.List;
 
 public abstract class Game {
 
-    private Board board;
-    private List<Move> moveHistory = new ArrayList<>();
+    private final Board board;
+    private final List<Move> moveHistory = new ArrayList<>();
 
     protected Game(Board board) {
         this.board = board;

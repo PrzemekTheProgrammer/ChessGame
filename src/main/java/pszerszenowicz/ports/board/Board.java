@@ -9,28 +9,24 @@ import pszerszenowicz.ports.piece.PieceCoordinate;
 import java.util.*;
 
 public abstract class Board {
-    private Player white = new Player(PieceColor.WHITE);
-    private Player black = new Player(PieceColor.BLACK);
-    private Map<PieceCoordinate,Piece> pieceCoordinate = new HashMap<>();
-    private List<Piece> pieces = new ArrayList<>();
+    private final Player white = new Player(PieceColor.WHITE);
+    private final Player black = new Player(PieceColor.BLACK);
+    private final Map<PieceCoordinate, Piece> pieceCoordinate = new HashMap<>();
+    private final List<Piece> pieces = new ArrayList<>();
 
     public abstract void setBoard();
 
     public void addPiece(Piece piece) {
         pieces.add(piece);
-        pieceCoordinate.put(piece.getPieceCoordinate(),piece);
+        pieceCoordinate.put(piece.getPieceCoordinate(), piece);
     }
-    public Set<Move> avaibleMoves(Player player){
-        if(player != white && player !=black){
+
+    public Set<Move> avaibleMoves(Player player) {
+        if (player != white && player != black) {
             //TODO throw
         }
         Set<Move> ret = new HashSet<>();
-        List<Piece> pieces = this.pieces.stream().filter((piece) ->
-        {
-            return piece.getPlayer() == player;
-        })
-
-                .toList();
+        List<Piece> pieces = this.pieces.stream().filter((piece) -> piece.getPlayer() == player).toList();
         for (Piece piece : pieces) {
             ret.addAll(piece.getMoves(this));
         }

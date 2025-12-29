@@ -21,7 +21,6 @@ public class Knight extends Piece {
     @Override
     public Set<Move> getMoves(Board board) {
         Set<Move> possibleMoves = new HashSet<>();
-        PieceCoordinate from = this.getPieceCoordinate();
         int[] horizontalDir = {-1, -2, -2, -1, 1, 2, 2, 1};
         int[] verticalDir = {2, 1, -1, -2, -2, -1, 1, 2};
         for (int dir = 0; dir < 8; dir++) {

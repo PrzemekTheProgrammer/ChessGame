@@ -20,7 +20,6 @@ public class Bishop extends Piece {
     @Override
     public Set<Move> getMoves(Board board) {
         Set<Move> possibleMoves = new HashSet<>();
-        PieceCoordinate from = this.getPieceCoordinate();
         int[] horizontalDir = {-1, -1, 1, 1};
         int[] verticalDir = {1, -1, -1, 1};
         for (int dir = 0; dir < 4; dir++) {

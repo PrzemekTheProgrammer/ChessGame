@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class Move {
-    private Piece piece;
-    private PieceCoordinate to;
-    private ArrayList<MoveTags> tags = new ArrayList<>();
+    private final Piece piece;
+    private final PieceCoordinate to;
+    private final ArrayList<MoveTags> tags = new ArrayList<>();
 
 
     public Move(Piece piece, PieceCoordinate to) {
