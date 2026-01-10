@@ -2,6 +2,8 @@ package pszerszenowicz.chess.adapters.board;
 
 import pszerszenowicz.chess.adapters.piece.*;
 import pszerszenowicz.ports.board.*;
+import pszerszenowicz.ports.move.Move;
+import pszerszenowicz.ports.move.MoveTags;
 import pszerszenowicz.ports.piece.Piece;
 import pszerszenowicz.ports.piece.PieceCoordinate;
 
@@ -11,7 +13,7 @@ import java.util.Set;
 
 
 public class ChessBoard extends Board {
-    
+
     public static final PieceCoordinate A1 = new PieceCoordinate(1, 1);
     public static final PieceCoordinate A2 = new PieceCoordinate(1, 2);
     public static final PieceCoordinate A3 = new PieceCoordinate(1, 3);
@@ -84,87 +86,133 @@ public class ChessBoard extends Board {
     public static final PieceCoordinate H7 = new PieceCoordinate(8, 7);
     public static final PieceCoordinate H8 = new PieceCoordinate(8, 8);
 
-    private static final Set<PieceCoordinate> pieceCoordinates = Set.of(A1,A2,A3,A4,A5,A6,A7,A8,
-            B1,B2,B3,B4,B5,B6,B7,B8,
-            C1,C2,C3,C4,C5,C6,C7,C8,
-            D1,D2,D3,D4,D5,D6,D7,D8,
-            E1,E2,E3,E4,E5,E6,E7,E8,
-            F1,F2,F3,F4,F5,F6,F7,F8,
-            G1,G2,G3,G4,G5,G6,G7,G8,
-            H1,H2,H3,H4,H5,H6,H7,H8);
+    private static final Set<PieceCoordinate> pieceCoordinates = Set.of(A1, A2, A3, A4, A5, A6, A7, A8,
+            B1, B2, B3, B4, B5, B6, B7, B8,
+            C1, C2, C3, C4, C5, C6, C7, C8,
+            D1, D2, D3, D4, D5, D6, D7, D8,
+            E1, E2, E3, E4, E5, E6, E7, E8,
+            F1, F2, F3, F4, F5, F6, F7, F8,
+            G1, G2, G3, G4, G5, G6, G7, G8,
+            H1, H2, H3, H4, H5, H6, H7, H8);
 
-    private static final Map<String,PieceCoordinate> lookup = new HashMap<>();
+    private static final Map<String, PieceCoordinate> lookup = new HashMap<>();
 
     static {
-        for(PieceCoordinate pc : pieceCoordinates) {
-            lookup.put(getCoordinateAsString(pc.getColumn(),pc.getRow()),pc);
+        for (PieceCoordinate pc : pieceCoordinates) {
+            lookup.put(getCoordinateAsString(pc.getColumn(), pc.getRow()), pc);
         }
     }
 
+    public ChessBoard() {
+        super();
+    }
+
+    ;
+
+    public ChessBoard(Board board) {
+        super(board);
+    }
+
     public static PieceCoordinate getCoordinate(int horVal, int verVal) {
-        return lookup.get(getCoordinateAsString(horVal,verVal));
+        return lookup.get(getCoordinateAsString(horVal, verVal));
     }
 
     private static String getCoordinateAsString(int horVal, int verVal) {
-        return "" + (char) ('A' + horVal-1) + verVal;
+        return "" + (char) ('A' + horVal - 1) + verVal;
+    }
+
+    @Override
+    public void move(Move move) {
+        getPieceCoordinate().put(move.getTo(), move.getPiece());
+        getPieceCoordinate().remove(move.getFrom());
+        move.getPiece().setPieceCoordinate(move.getTo());
+        if (move.hasTag(MoveTags.Capture)) {
+            if (move.hasTag(MoveTags.EnPassant)) {
+                getPieceCoordinate().remove(move.getAuxillaryPiece().getPieceCoordinate());
+            }
+            getPieces().remove(move.getAuxillaryPiece());
+        }
+        if (move.hasTag(MoveTags.Castle)) {
+            getPieceCoordinate().remove(move.getAuxillaryPiece().getPieceCoordinate());
+            int direction = 5 - move.getTo().getColumn() < 0 ? -1 : 1;
+            move.getAuxillaryPiece().setPieceCoordinate(getCoordinate(
+                    move.getTo().getColumn() + direction,
+                    move.getTo().getRow()));
+            getPieceCoordinate().put(move.getAuxillaryPiece().getPieceCoordinate(),move.getAuxillaryPiece());
+        }
+    }
+
+    @Override
+    public void undoMove(Move move) {
+        getPieceCoordinate().put(move.getFrom(), move.getPiece());
+        getPieceCoordinate().remove(move.getTo());
+        move.getPiece().setPieceCoordinate(move.getFrom());
+        if (move.hasTag(MoveTags.Capture)) {
+            addPiece(move.getAuxillaryPiece());
+        }
+        if (move.hasTag(MoveTags.Castle)) {
+            int rookColumn = 5 - move.getTo().getColumn() < 0 ? 8 : 1;
+            move.getAuxillaryPiece().setPieceCoordinate(
+                    getCoordinate(
+                            rookColumn,
+                            move.getAuxillaryPiece().getPieceCoordinate().getRow()));
+        }
     }
 
     @Override
     public void setBoard() {
         PieceCoordinate tmp;
         Piece piece;
-        for(int col = 1; col <=8 ; col++){
-            tmp = getCoordinate(col,2);
-            piece = new Pawn(tmp,this.getWhite());
+        for (int col = 1; col <= 8; col++) {
+            tmp = getCoordinate(col, 2);
+            piece = new Pawn(tmp, this.getWhite());
             addPiece(piece);
         }
-        for(int col = 1; col <=8 ; col++){
-            tmp = getCoordinate(col,7);
-            piece = new Pawn(tmp,this.getBlack());
+        for (int col = 1; col <= 8; col++) {
+            tmp = getCoordinate(col, 7);
+            piece = new Pawn(tmp, this.getBlack());
             addPiece(piece);
         }
 
-        piece = new Rook(A1,this.getWhite());
+        piece = new Rook(A1, this.getWhite());
         addPiece(piece);
-        piece = new Rook(H1,this.getWhite());
-        addPiece(piece);
-
-        piece = new Rook(A8,this.getBlack());
-        addPiece(piece);
-        piece = new Rook(H8,this.getBlack());
+        piece = new Rook(H1, this.getWhite());
         addPiece(piece);
 
-        piece = new Knight(B1,this.getWhite());
+        piece = new Rook(A8, this.getBlack());
         addPiece(piece);
-        piece = new Knight(G1,this.getWhite());
-        addPiece(piece);
-
-        piece = new Knight(B8,this.getBlack());
-        addPiece(piece);
-        piece = new Knight(G8,this.getBlack());
+        piece = new Rook(H8, this.getBlack());
         addPiece(piece);
 
-        piece = new Bishop(C1,this.getWhite());
+        piece = new Knight(B1, this.getWhite());
         addPiece(piece);
-        piece = new Bishop(F1,this.getWhite());
-        addPiece(piece);
-
-        piece = new Bishop(C8,this.getBlack());
-        addPiece(piece);
-        piece = new Bishop(F8,this.getBlack());
+        piece = new Knight(G1, this.getWhite());
         addPiece(piece);
 
-        piece = new Queen(D1,this.getWhite());
+        piece = new Knight(B8, this.getBlack());
         addPiece(piece);
-        piece = new Queen(D8,this.getBlack());
+        piece = new Knight(G8, this.getBlack());
         addPiece(piece);
 
-        piece = new King(E1,this.getWhite());
+        piece = new Bishop(C1, this.getWhite());
         addPiece(piece);
-        piece = new King(E8,this.getBlack());
+        piece = new Bishop(F1, this.getWhite());
+        addPiece(piece);
+
+        piece = new Bishop(C8, this.getBlack());
+        addPiece(piece);
+        piece = new Bishop(F8, this.getBlack());
+        addPiece(piece);
+
+        piece = new Queen(D1, this.getWhite());
+        addPiece(piece);
+        piece = new Queen(D8, this.getBlack());
+        addPiece(piece);
+
+        piece = new King(E1, this.getWhite());
+        addPiece(piece);
+        piece = new King(E8, this.getBlack());
         addPiece(piece);
     }
-
-
 
 }

@@ -75,10 +75,12 @@ public class Pawn extends Piece {
             PieceCoordinate newCoord = getCoordinate(newHorVal, newVertVal);
             Piece existingPiece = board.getPieceCoordinate().get(newCoord);
             if (existingPiece != null && existingPiece.getPlayer() != this.getPlayer()) {
-                Move move = new Move(this, newCoord);
+                Move move;
                 if (existingPiece instanceof King) {
+                    move = new Move(this, newCoord);
                     move.addTag(MoveTags.AttacksKing);
                 } else {
+                    move = new Move(this, newCoord,existingPiece);
                     move.addTag(MoveTags.Capture);
                 }
                 ret.add(move);

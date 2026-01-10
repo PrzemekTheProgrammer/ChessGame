@@ -40,11 +40,13 @@ public class Bishop extends Piece {
                     possibleMoves.add(new Move(this,newCoord));
                 } else {
                     if (existingPiece.getPlayer() != this.getPlayer()) {
-                        Move to = new Move(this,newCoord);
+                        Move to;
                         if(existingPiece instanceof King) {
+                            to = new Move(this,newCoord);
                             to.addTag(MoveTags.AttacksKing);
                         }
                         else{
+                            to = new Move(this,newCoord,existingPiece);
                             to.addTag(MoveTags.Capture);
                         }
                         possibleMoves.add(to); // bicie

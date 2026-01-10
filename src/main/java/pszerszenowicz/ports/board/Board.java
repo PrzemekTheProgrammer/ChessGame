@@ -2,6 +2,7 @@ package pszerszenowicz.ports.board;
 
 import pszerszenowicz.domain.adapters.Player;
 import pszerszenowicz.ports.move.Move;
+import pszerszenowicz.ports.move.MoveTags;
 import pszerszenowicz.ports.piece.Piece;
 import pszerszenowicz.ports.piece.PieceColor;
 import pszerszenowicz.ports.piece.PieceCoordinate;
@@ -9,10 +10,22 @@ import pszerszenowicz.ports.piece.PieceCoordinate;
 import java.util.*;
 
 public abstract class Board {
-    private final Player white = new Player(PieceColor.WHITE);
-    private final Player black = new Player(PieceColor.BLACK);
+    private final Player white;
+    private final Player black;
     private final Map<PieceCoordinate, Piece> pieceCoordinate = new HashMap<>();
     private final List<Piece> pieces = new ArrayList<>();
+
+    public Board(Board board) {
+        white = board.getWhite();
+        black = board.getBlack();
+        this.pieces.addAll(board.pieces);
+        pieceCoordinate.putAll(board.pieceCoordinate);
+    }
+
+    public Board(){
+        white = new Player(PieceColor.WHITE);
+        black = new Player(PieceColor.BLACK);
+    };
 
     public abstract void setBoard();
 
@@ -22,9 +35,6 @@ public abstract class Board {
     }
 
     public Set<Move> avaibleMoves(Player player) {
-        if (player != white && player != black) {
-            //TODO throw
-        }
         Set<Move> ret = new HashSet<>();
         List<Piece> pieces = this.pieces.stream().filter((piece) -> piece.getPlayer() == player).toList();
         for (Piece piece : pieces) {
@@ -37,6 +47,10 @@ public abstract class Board {
         return pieceCoordinate;
     }
 
+    public List<Piece> getPieces() {
+        return pieces;
+    }
+
     public Player getWhite() {
         return white;
     }
@@ -44,4 +58,7 @@ public abstract class Board {
     public Player getBlack() {
         return black;
     }
+
+    public abstract void move(Move move);
+    public abstract void undoMove(Move move);
 }
