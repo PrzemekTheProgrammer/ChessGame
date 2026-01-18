@@ -1,19 +1,19 @@
 package pszerszenowicz.chess.board;
 
 import org.junit.Test;
-import pszerszenowicz.chess.adapters.board.ChessBoard;
-import pszerszenowicz.chess.adapters.piece.*;
-import pszerszenowicz.domain.adapters.Player;
-import pszerszenowicz.ports.board.Board;
-import pszerszenowicz.ports.move.Move;
-import pszerszenowicz.ports.move.MoveTags;
-import pszerszenowicz.ports.piece.Piece;
-import pszerszenowicz.ports.piece.PieceCoordinate;
+import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
+import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.domain.ports.Board;
+import pszerszenowicz.games.chess.board.ChessBoard;
+import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.piece.*;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static pszerszenowicz.chess.adapters.board.ChessBoard.*;
+import static pszerszenowicz.games.chess.board.ChessBoard.*;
 
 
 public class ChessBoardTests {
@@ -25,33 +25,33 @@ public class ChessBoardTests {
         //when
         board.setBoard();
 
-        long piecesQuantity = board.getPieceCoordinate().size();
+        long piecesQuantity = board.pieces().size();
 
-        Player white = board.getWhite();
-        Player black = board.getBlack();
-        long whitePiecesQuantity = board.getPieceCoordinate().values()
-                .stream().filter((piece) -> piece.getPlayer() == white)
+        PieceColor white = board.white();
+        PieceColor black = board.black();
+        long whitePiecesQuantity = board.pieces()
+                .stream().filter((piece) -> piece.getColor() == white)
                 .count();
-        long blackPiecesQuantity = board.getPieceCoordinate().values()
-                .stream().filter((piece) -> piece.getPlayer() == black)
+        long blackPiecesQuantity = board.pieces()
+                .stream().filter((piece) -> piece.getColor() == black)
                 .count();
 
-        long pawnsQuantity = board.getPieceCoordinate().values()
+        long pawnsQuantity = board.pieces()
                 .stream().filter((piece) -> piece instanceof Pawn)
                 .count();
-        long rooksQuantity = board.getPieceCoordinate().values()
+        long rooksQuantity = board.pieces()
                 .stream().filter((piece) -> piece instanceof Rook)
                 .count();
-        long knightsQuantity = board.getPieceCoordinate().values()
+        long knightsQuantity = board.pieces()
                 .stream().filter((piece) -> piece instanceof Knight)
                 .count();
-        long bishopsQuantity = board.getPieceCoordinate().values()
+        long bishopsQuantity = board.pieces()
                 .stream().filter((piece) -> piece instanceof Bishop)
                 .count();
-        long queensQuantity = board.getPieceCoordinate().values()
+        long queensQuantity = board.pieces()
                 .stream().filter((piece) -> piece instanceof Queen)
                 .count();
-        long kingsQuantity = board.getPieceCoordinate().values()
+        long kingsQuantity = board.pieces()
                 .stream().filter((piece) -> piece instanceof King)
                 .count();
         //Then
@@ -71,20 +71,19 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new King(E1,board.getWhite());
+        King testedPiece = new King(E1,board.white());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1,board.getWhite());
+        Piece tmpPiece = new Rook(A1,board.white());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,C1,tmpPiece);
-        move.addTag(MoveTags.Castle);
-        board.move(move);
-        List<Piece> pieces = board.getPieces();
+        ChessMove move = new ChessMove(testedPiece,C1,tmpPiece);
+        move.addTag(ChessMoveTags.Castle);
+        board.applyMove(move);
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(C1,D1)));
         assertSame(testedPiece.getPieceCoordinate(), C1);
         assertSame(tmpPiece.getPieceCoordinate(),D1);
-        assertEquals(board.getPieceCoordinate().values().stream().toList(),pieces);
     }
 
     @Test
@@ -92,20 +91,19 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new King(E8,board.getBlack());
+        King testedPiece = new King(E8,board.black());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.getBlack());
+        Piece tmpPiece = new Rook(H8,board.black());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,G8,tmpPiece);
-        move.addTag(MoveTags.Castle);
-        board.move(move);
-        List<Piece> pieces = board.getPieces();
+        ChessMove move = new ChessMove(testedPiece,G8,tmpPiece);
+        move.addTag(ChessMoveTags.Castle);
+        board.applyMove(move);
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(G8,F8)));
         assertSame(testedPiece.getPieceCoordinate(), G8);
         assertSame(tmpPiece.getPieceCoordinate(),F8);
-        assertEquals(board.getPieceCoordinate().values().stream().toList(),pieces);
     }
 
     @Test
@@ -113,20 +111,19 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Queen(E8,board.getBlack());
+        Piece testedPiece = new Queen(E8,board.black());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.getWhite());
+        Piece tmpPiece = new Rook(H8,board.white());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,H8,tmpPiece);
-        move.addTag(MoveTags.Capture);
-        board.move(move);
-        List<Piece> pieces = board.getPieces();
+        ChessMove move = new ChessMove(testedPiece,H8,tmpPiece);
+        move.addTag(ChessMoveTags.Capture);
+        board.applyMove(move);
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.contains(H8));
         assertSame(testedPiece.getPieceCoordinate(), H8);
         assertTrue(pieceCoordinates.size() == 1);
-        assertEquals(board.getPieceCoordinate().values().stream().toList(),pieces);
     }
 
     @Test
@@ -134,16 +131,16 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Queen(E1,board.getBlack());
+        Piece testedPiece = new Queen(E1,board.black());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.getWhite());
+        Piece tmpPiece = new Rook(H8,board.white());
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(A1,board.getWhite());
+        tmpPiece = new Rook(A1,board.white());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,A1,tmpPiece);
-        move.addTag(MoveTags.Capture);
-        board.move(move);
-        List<Piece> pieces = board.getPieces();
+        ChessMove move = new ChessMove(testedPiece,A1,tmpPiece);
+        move.addTag(ChessMoveTags.Capture);
+        board.applyMove(move);
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(A1,H8)));
@@ -156,15 +153,15 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(E4,board.getBlack());
+        Piece testedPiece = new Pawn(E4,board.black());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(F4,board.getWhite());
+        Piece tmpPiece = new Pawn(F4,board.white());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,F3,tmpPiece);
-        move.addTag(MoveTags.EnPassant);
-        move.addTag(MoveTags.Capture);
-        board.move(move);
-        List<Piece> pieces = board.getPieces();
+        ChessMove move = new ChessMove(testedPiece,F3,tmpPiece);
+        move.addTag(ChessMoveTags.EnPassant);
+        move.addTag(ChessMoveTags.Capture);
+        board.applyMove(move);
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.contains(F3));
@@ -177,15 +174,15 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new King(E1,board.getWhite());
+        Piece testedPiece = new King(E1,board.white());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1,board.getWhite());
+        Piece tmpPiece = new Rook(A1,board.white());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,C1,tmpPiece);
-        move.addTag(MoveTags.Castle);
-        board.move(move);
+        ChessMove move = new ChessMove(testedPiece,C1,tmpPiece);
+        move.addTag(ChessMoveTags.Castle);
+        board.applyMove(move);
         board.undoMove(move);
-        List<Piece> pieces = board.getPieces();
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(E1,A1)));
@@ -199,17 +196,17 @@ public class ChessBoardTests {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Queen(E1,board.getBlack());
+        Piece testedPiece = new Queen(E1,board.black());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.getWhite());
+        Piece tmpPiece = new Rook(H8,board.white());
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(A1,board.getWhite());
+        tmpPiece = new Rook(A1,board.white());
         board.addPiece(tmpPiece);
-        Move move = new Move(testedPiece,A1,tmpPiece);
-        move.addTag(MoveTags.Capture);
-        board.move(move);
+        ChessMove move = new ChessMove(testedPiece,A1,tmpPiece);
+        move.addTag(ChessMoveTags.Capture);
+        board.applyMove(move);
         board.undoMove(move);
-        List<Piece> pieces = board.getPieces();
+        List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(E1,H8,A1)));

@@ -1,22 +1,22 @@
-package pszerszenowicz.chess.adapters.piece;
+package pszerszenowicz.games.chess.piece;
 
-import pszerszenowicz.domain.adapters.Player;
-import pszerszenowicz.ports.move.MoveTags;
-import pszerszenowicz.ports.board.Board;
-import pszerszenowicz.ports.move.Move;
-import pszerszenowicz.ports.piece.Piece;
-import pszerszenowicz.ports.piece.PieceCoordinate;
+import pszerszenowicz.domain.core.piece.PieceColor;
+import pszerszenowicz.domain.ports.Board;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceCoordinate;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static pszerszenowicz.chess.adapters.board.ChessBoard.*;
+import static pszerszenowicz.games.chess.board.ChessBoard.getCoordinate;
 
 public class King extends Piece {
     private Boolean canCastle = true;
 
-    public King(PieceCoordinate pieceCoordinate, Player player) {
-        super(pieceCoordinate, player);
+    public King(PieceCoordinate pieceCoordinate, PieceColor color) {
+        super(pieceCoordinate, color);
     }
 
     public void loseCastleRight() {
@@ -24,8 +24,8 @@ public class King extends Piece {
     }
 
     @Override
-    public Set<Move> getMoves(Board board) {
-        Set<Move> possibleMoves = new HashSet<>();
+    public Set<ChessMove> getMoves(Board board) {
+        Set<ChessMove> possibleMoves = new HashSet<>();
         PieceCoordinate from = this.getPieceCoordinate();
         int[] horizontalDir = {-1, -1, -1, 0, 1, 1, 1, 0};
         int[] verticalDir = {1, 0, -1, -1, -1, 0, 1, 1};
@@ -40,18 +40,18 @@ public class King extends Piece {
                     newHorizontalValue,
                     newVerticalValue);
 
-            Piece existingPiece = board.getPieceCoordinate().get(newCoord);
+            Piece existingPiece = board.getPieceAtCoordinate(newCoord);
             if (existingPiece == null) {
-                possibleMoves.add(new Move(this, newCoord));
+                possibleMoves.add(new ChessMove(this, newCoord));
             } else {
-                if (existingPiece.getPlayer() != this.getPlayer()) {
-                    Move to;
+                if (existingPiece.getColor() != this.getColor()) {
+                    ChessMove to;
                     if (existingPiece instanceof King) {
-                        to = new Move(this, newCoord);
-                        to.addTag(MoveTags.AttacksKing);
+                        to = new ChessMove(this, newCoord);
+                        to.addTag(ChessMoveTags.AttacksKing);
                     } else {
-                        to = new Move(this, newCoord,existingPiece);
-                        to.addTag(MoveTags.Capture);
+                        to = new ChessMove(this, newCoord,existingPiece);
+                        to.addTag(ChessMoveTags.Capture);
                     }
                     possibleMoves.add(to); // bicie
                 }
@@ -71,7 +71,7 @@ public class King extends Piece {
                     PieceCoordinate newCoord = getCoordinate(
                             newHorizontalValue,
                             from.getRow());
-                    Piece existingPiece = board.getPieceCoordinate().get(newCoord);
+                    Piece existingPiece = board.getPieceAtCoordinate(newCoord);
                     if (newHorizontalValue != 1 && newHorizontalValue != 8) {
                         if (existingPiece == null) {
                             step++;
@@ -87,8 +87,8 @@ public class King extends Piece {
                                 newHorizontalNotationIntValue,
                                 from.getRow()
                         );
-                        Move to = new Move(this, tmp);
-                        to.addTag(MoveTags.Castle);
+                        ChessMove to = new ChessMove(this, tmp);
+                        to.addTag(ChessMoveTags.Castle);
                         possibleMoves.add(to);
                     }
                     continue castleDirection;

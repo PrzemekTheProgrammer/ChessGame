@@ -1,18 +1,17 @@
-package pszerszenowicz.chess.adapters.board;
+package pszerszenowicz.games.chess.board;
 
-import pszerszenowicz.chess.adapters.piece.*;
-import pszerszenowicz.ports.board.*;
-import pszerszenowicz.ports.move.Move;
-import pszerszenowicz.ports.move.MoveTags;
-import pszerszenowicz.ports.piece.Piece;
-import pszerszenowicz.ports.piece.PieceCoordinate;
+import pszerszenowicz.domain.ports.Board;
+import pszerszenowicz.domain.ports.Move;
+import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
+import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.games.chess.piece.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-
-public class ChessBoard extends Board {
+public class ChessBoard implements Board {
 
     public static final PieceCoordinate A1 = new PieceCoordinate(1, 1);
     public static final PieceCoordinate A2 = new PieceCoordinate(1, 2);
@@ -103,16 +102,6 @@ public class ChessBoard extends Board {
         }
     }
 
-    public ChessBoard() {
-        super();
-    }
-
-    ;
-
-    public ChessBoard(Board board) {
-        super(board);
-    }
-
     public static PieceCoordinate getCoordinate(int horVal, int verVal) {
         return lookup.get(getCoordinateAsString(horVal, verVal));
     }
@@ -121,41 +110,83 @@ public class ChessBoard extends Board {
         return "" + (char) ('A' + horVal - 1) + verVal;
     }
 
+    private final PieceColor white;
+    private final PieceColor black;
+    private final Map<PieceCoordinate, Piece> pieceCoordinate = new HashMap<>();
+    private final List<Piece> pieces = new ArrayList<>();
+
+    public ChessBoard(){
+        white = PieceColor.WHITE;
+        black = PieceColor.BLACK;
+    };
+
     @Override
-    public void move(Move move) {
-        getPieceCoordinate().put(move.getTo(), move.getPiece());
-        getPieceCoordinate().remove(move.getFrom());
-        move.getPiece().setPieceCoordinate(move.getTo());
-        if (move.hasTag(MoveTags.Capture)) {
-            if (move.hasTag(MoveTags.EnPassant)) {
-                getPieceCoordinate().remove(move.getAuxillaryPiece().getPieceCoordinate());
+    public void addPiece(Piece piece) {
+        pieces.add(piece);
+        pieceCoordinate.put(piece.getPieceCoordinate(), piece);
+    }
+
+    @Override
+    public Set<ChessMove> availableMoves(PieceColor color) {
+        Set<ChessMove> ret = new HashSet<>();
+        List<Piece> pieces = this.pieces.stream().filter((piece) -> piece.getColor() == color).toList();
+        for (Piece piece : pieces) {
+            for (Move m : piece.getMoves(this)) {
+                ret.add((ChessMove) m);
             }
-            getPieces().remove(move.getAuxillaryPiece());
         }
-        if (move.hasTag(MoveTags.Castle)) {
-            getPieceCoordinate().remove(move.getAuxillaryPiece().getPieceCoordinate());
-            int direction = 5 - move.getTo().getColumn() < 0 ? -1 : 1;
-            move.getAuxillaryPiece().setPieceCoordinate(getCoordinate(
-                    move.getTo().getColumn() + direction,
-                    move.getTo().getRow()));
-            getPieceCoordinate().put(move.getAuxillaryPiece().getPieceCoordinate(),move.getAuxillaryPiece());
+        return ret;
+    }
+
+    @Override
+    public PieceColor white() {
+        return white;
+    }
+
+    @Override
+    public PieceColor black() {
+        return black;
+    }
+
+    @Override
+    public void applyMove(Move move) {
+        if(move instanceof ChessMove) {
+            pieceCoordinate.put(move.to(), move.piece());
+            pieceCoordinate.remove(move.from());
+            move.piece().setPieceCoordinate(move.to());
+            if (move.hasTag(ChessMoveTags.Capture)) {
+                if (move.hasTag(ChessMoveTags.EnPassant)) {
+                    pieceCoordinate.remove(((ChessMove) move).getAuxillaryPiece().getPieceCoordinate());
+                }
+                pieces().remove(((ChessMove) move).getAuxillaryPiece());
+            }
+            if (move.hasTag(ChessMoveTags.Castle)) {
+                pieceCoordinate.remove(((ChessMove) move).getAuxillaryPiece().getPieceCoordinate());
+                int direction = 5 - move.to().getColumn() < 0 ? -1 : 1;
+                ((ChessMove) move).getAuxillaryPiece().setPieceCoordinate(getCoordinate(
+                        move.to().getColumn() + direction,
+                        move.to().getRow()));
+                pieceCoordinate.put(((ChessMove) move).getAuxillaryPiece().getPieceCoordinate(), ((ChessMove) move).getAuxillaryPiece());
+            }
         }
     }
 
     @Override
     public void undoMove(Move move) {
-        getPieceCoordinate().put(move.getFrom(), move.getPiece());
-        getPieceCoordinate().remove(move.getTo());
-        move.getPiece().setPieceCoordinate(move.getFrom());
-        if (move.hasTag(MoveTags.Capture)) {
-            addPiece(move.getAuxillaryPiece());
-        }
-        if (move.hasTag(MoveTags.Castle)) {
-            int rookColumn = 5 - move.getTo().getColumn() < 0 ? 8 : 1;
-            move.getAuxillaryPiece().setPieceCoordinate(
-                    getCoordinate(
-                            rookColumn,
-                            move.getAuxillaryPiece().getPieceCoordinate().getRow()));
+        if(move instanceof ChessMove) {
+            pieceCoordinate.put(move.from(), move.piece());
+            pieceCoordinate.remove(move.to());
+            move.piece().setPieceCoordinate(move.from());
+            if (move.hasTag(ChessMoveTags.Capture)) {
+                addPiece(((ChessMove) move).getAuxillaryPiece());
+            }
+            if (move.hasTag(ChessMoveTags.Castle)) {
+                int rookColumn = 5 - move.to().getColumn() < 0 ? 8 : 1;
+                ((ChessMove) move).getAuxillaryPiece().setPieceCoordinate(
+                        getCoordinate(
+                                rookColumn,
+                                ((ChessMove) move).getAuxillaryPiece().getPieceCoordinate().getRow()));
+            }
         }
     }
 
@@ -165,54 +196,63 @@ public class ChessBoard extends Board {
         Piece piece;
         for (int col = 1; col <= 8; col++) {
             tmp = getCoordinate(col, 2);
-            piece = new Pawn(tmp, this.getWhite());
+            piece = new Pawn(tmp, this.white());
             addPiece(piece);
         }
         for (int col = 1; col <= 8; col++) {
             tmp = getCoordinate(col, 7);
-            piece = new Pawn(tmp, this.getBlack());
+            piece = new Pawn(tmp, this.black());
             addPiece(piece);
         }
 
-        piece = new Rook(A1, this.getWhite());
+        piece = new Rook(A1, this.white());
         addPiece(piece);
-        piece = new Rook(H1, this.getWhite());
-        addPiece(piece);
-
-        piece = new Rook(A8, this.getBlack());
-        addPiece(piece);
-        piece = new Rook(H8, this.getBlack());
+        piece = new Rook(H1, this.white());
         addPiece(piece);
 
-        piece = new Knight(B1, this.getWhite());
+        piece = new Rook(A8, this.black());
         addPiece(piece);
-        piece = new Knight(G1, this.getWhite());
-        addPiece(piece);
-
-        piece = new Knight(B8, this.getBlack());
-        addPiece(piece);
-        piece = new Knight(G8, this.getBlack());
+        piece = new Rook(H8, this.black());
         addPiece(piece);
 
-        piece = new Bishop(C1, this.getWhite());
+        piece = new Knight(B1, this.white());
         addPiece(piece);
-        piece = new Bishop(F1, this.getWhite());
-        addPiece(piece);
-
-        piece = new Bishop(C8, this.getBlack());
-        addPiece(piece);
-        piece = new Bishop(F8, this.getBlack());
+        piece = new Knight(G1, this.white());
         addPiece(piece);
 
-        piece = new Queen(D1, this.getWhite());
+        piece = new Knight(B8, this.black());
         addPiece(piece);
-        piece = new Queen(D8, this.getBlack());
+        piece = new Knight(G8, this.black());
         addPiece(piece);
 
-        piece = new King(E1, this.getWhite());
+        piece = new Bishop(C1, this.white());
         addPiece(piece);
-        piece = new King(E8, this.getBlack());
+        piece = new Bishop(F1, this.white());
+        addPiece(piece);
+
+        piece = new Bishop(C8, this.black());
+        addPiece(piece);
+        piece = new Bishop(F8, this.black());
+        addPiece(piece);
+
+        piece = new Queen(D1, this.white());
+        addPiece(piece);
+        piece = new Queen(D8, this.black());
+        addPiece(piece);
+
+        piece = new King(E1, this.white());
+        addPiece(piece);
+        piece = new King(E8, this.black());
         addPiece(piece);
     }
 
+    @Override
+    public List<Piece> pieces() {
+        return pieces;
+    }
+
+    @Override
+    public Piece getPieceAtCoordinate(PieceCoordinate pc) {
+        return pieceCoordinate.get(pc);
+    }
 }

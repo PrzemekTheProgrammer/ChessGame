@@ -1,4 +1,4 @@
-package pszerszenowicz.ports.piece;
+package pszerszenowicz.domain.core.piece;
 
 public enum PieceColor {
     WHITE,BLACK

@@ -1,4 +1,4 @@
-package pszerszenowicz.ports.piece;
+package pszerszenowicz.domain.core.piece;
 
 import java.util.*;
 

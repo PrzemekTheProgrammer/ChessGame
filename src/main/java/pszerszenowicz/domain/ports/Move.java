@@ -1,0 +1,15 @@
+package pszerszenowicz.domain.ports;
+
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.domain.core.piece.Piece;
+
+public interface Move {
+    void addTag(Tag tag);
+    boolean hasTag(Tag tag);
+    PieceCoordinate to();
+    PieceCoordinate from();
+    Piece piece();
+
+
+}

@@ -1,21 +1,21 @@
 package pszerszenowicz.chess.piece;
 
 import org.junit.Test;
-import pszerszenowicz.chess.adapters.board.ChessBoard;
-import pszerszenowicz.chess.adapters.piece.King;
-import pszerszenowicz.chess.adapters.piece.Pawn;
-import pszerszenowicz.ports.move.MoveTags;
-import pszerszenowicz.ports.board.Board;
-import pszerszenowicz.ports.move.Move;
-import pszerszenowicz.ports.piece.Piece;
-import pszerszenowicz.ports.piece.PieceCoordinate;
+import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.domain.ports.Board;
+import pszerszenowicz.games.chess.board.ChessBoard;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.piece.King;
+import pszerszenowicz.games.chess.piece.Pawn;
 
 import java.util.List;
 import java.util.Set;
 
+import static pszerszenowicz.games.chess.board.ChessBoard.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static pszerszenowicz.chess.adapters.board.ChessBoard.*;
 
 public class PawnTest {
 
@@ -24,12 +24,12 @@ public class PawnTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B3,board.getWhite());
+        Pawn testedPiece = new Pawn(B3,board.white());
         board.addPiece(testedPiece);
-        Set<Move> pawnMoves = testedPiece.getMoves(board);
+        Set<ChessMove> pawnMoves = testedPiece.getMoves(board);
         //then
         assertEquals(1,pawnMoves.size());
-        assertEquals(B4, pawnMoves.iterator().next().getTo());
+        assertEquals(B4, pawnMoves.iterator().next().to());
     }
 
     @Test
@@ -37,16 +37,16 @@ public class PawnTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B2,board.getWhite());
+        Pawn testedPiece = new Pawn(B2,board.white());
         board.addPiece(testedPiece);
-        Set<Move> pawnMoves = testedPiece.getMoves(board);
-        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(Move::getTo).toList();
-        List<MoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
+        Set<ChessMove> pawnMoves = testedPiece.getMoves(board);
+        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(ChessMove::to).toList();
+        List<ChessMoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
         assertEquals(2,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(B3));
         assertTrue(pawnMoveCoordinate.contains(B4));
-        assertTrue(movesTags.contains(MoveTags.Charge));
+        assertTrue(movesTags.contains(ChessMoveTags.Charge));
     }
 
     @Test
@@ -54,18 +54,18 @@ public class PawnTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B2,board.getWhite());
+        Pawn testedPiece = new Pawn(B2,board.white());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(C3,board.getBlack());
+        Piece tmpPiece = new Pawn(C3,board.black());
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(B3,board.getBlack());
+        tmpPiece = new Pawn(B3,board.black());
         board.addPiece(tmpPiece);
-        Set<Move> pawnMoves = testedPiece.getMoves(board);
-        List<MoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
+        Set<ChessMove> pawnMoves = testedPiece.getMoves(board);
+        List<ChessMoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
         assertEquals(1,pawnMoves.size());
-        assertEquals(C3,pawnMoves.iterator().next().getTo());
-        assertTrue(movesTags.contains(MoveTags.Capture));
+        assertEquals(C3,pawnMoves.iterator().next().to());
+        assertTrue(movesTags.contains(ChessMoveTags.Capture));
     }
 
     @Test
@@ -73,22 +73,22 @@ public class PawnTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B2,board.getWhite());
+        Pawn testedPiece = new Pawn(B2,board.white());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(C3,board.getBlack());
+        Piece tmpPiece = new Pawn(C3,board.black());
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(B3,board.getBlack());
+        tmpPiece = new Pawn(B3,board.black());
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(A3,board.getBlack());
+        tmpPiece = new Pawn(A3,board.black());
         board.addPiece(tmpPiece);
-        Set<Move> pawnMoves = testedPiece.getMoves(board);
-        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(Move::getTo).toList();
-        List<MoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
+        Set<ChessMove> pawnMoves = testedPiece.getMoves(board);
+        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(ChessMove::to).toList();
+        List<ChessMoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
         assertEquals(2,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(C3));
         assertTrue(pawnMoveCoordinate.contains(A3));
-        assertTrue(movesTags.contains(MoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.Capture));
     }
 
     @Test
@@ -96,20 +96,20 @@ public class PawnTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B5,board.getWhite());
+        Pawn testedPiece = new Pawn(B5,board.white());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(C5,board.getBlack());
+        Piece tmpPiece = new Pawn(C5,board.black());
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(B6,board.getBlack());
+        tmpPiece = new Pawn(B6,board.black());
         board.addPiece(tmpPiece);
-        Set<Move> pawnMoves = testedPiece.getMoves(board);
-        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(Move::getTo).toList();
-        List<MoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
+        Set<ChessMove> pawnMoves = testedPiece.getMoves(board);
+        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(ChessMove::to).toList();
+        List<ChessMoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
         assertEquals(1,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(C6));
-        assertTrue(movesTags.contains(MoveTags.Capture));
-        assertTrue(movesTags.contains(MoveTags.EnPassant));
+        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.EnPassant));
     }
 
     @Test
@@ -117,18 +117,18 @@ public class PawnTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(A7,board.getWhite());
+        Pawn testedPiece = new Pawn(A7,board.white());
         board.addPiece(testedPiece);
-        Piece tmpPiece = new King(B8,board.getBlack());
+        Piece tmpPiece = new King(B8,board.black());
         board.addPiece(tmpPiece);
-        Set<Move> pawnMoves = testedPiece.getMoves(board);
-        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(Move::getTo).toList();
-        List<MoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
+        Set<ChessMove> pawnMoves = testedPiece.getMoves(board);
+        List<PieceCoordinate> pawnMoveCoordinate = pawnMoves.stream().map(ChessMove::to).toList();
+        List<ChessMoveTags> movesTags = pawnMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
         assertEquals(2,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(A8));
         assertTrue(pawnMoveCoordinate.contains(B8));
-        assertTrue(movesTags.contains(MoveTags.AttacksKing));
+        assertTrue(movesTags.contains(ChessMoveTags.AttacksKing));
     }
 
 }
