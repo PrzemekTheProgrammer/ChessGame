@@ -23,6 +23,10 @@ public class King extends Piece {
         canCastle = false;
     }
 
+    public void applyCastleRight() {
+        canCastle = true;
+    }
+
     @Override
     public Set<ChessMove> getMoves(Board board) {
         Set<ChessMove> possibleMoves = new HashSet<>();
@@ -40,7 +44,7 @@ public class King extends Piece {
                     newHorizontalValue,
                     newVerticalValue);
 
-            Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+            Piece existingPiece = board.getPiece(newCoord);
             if (existingPiece == null) {
                 possibleMoves.add(new ChessMove(this, newCoord));
             } else {
@@ -71,7 +75,7 @@ public class King extends Piece {
                     PieceCoordinate newCoord = getCoordinate(
                             newHorizontalValue,
                             from.getRow());
-                    Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+                    Piece existingPiece = board.getPiece(newCoord);
                     if (newHorizontalValue != 1 && newHorizontalValue != 8) {
                         if (existingPiece == null) {
                             step++;
@@ -87,7 +91,7 @@ public class King extends Piece {
                                 newHorizontalNotationIntValue,
                                 from.getRow()
                         );
-                        ChessMove to = new ChessMove(this, tmp);
+                        ChessMove to = new ChessMove(this, tmp,existingPiece);
                         to.addTag(ChessMoveTags.Castle);
                         possibleMoves.add(to);
                     }

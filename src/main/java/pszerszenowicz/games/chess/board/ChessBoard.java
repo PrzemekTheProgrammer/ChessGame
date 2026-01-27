@@ -3,7 +3,6 @@ package pszerszenowicz.games.chess.board;
 import pszerszenowicz.domain.ports.Board;
 import pszerszenowicz.domain.ports.Move;
 import pszerszenowicz.games.chess.move.ChessMove;
-import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
@@ -113,7 +112,6 @@ public class ChessBoard implements Board {
     private final PieceColor white;
     private final PieceColor black;
     private final Map<PieceCoordinate, Piece> pieceCoordinate = new HashMap<>();
-    private final List<Piece> pieces = new ArrayList<>();
 
     public ChessBoard(){
         white = PieceColor.WHITE;
@@ -122,14 +120,13 @@ public class ChessBoard implements Board {
 
     @Override
     public void addPiece(Piece piece) {
-        pieces.add(piece);
         pieceCoordinate.put(piece.getPieceCoordinate(), piece);
     }
 
     @Override
     public Set<ChessMove> availableMoves(PieceColor color) {
         Set<ChessMove> ret = new HashSet<>();
-        List<Piece> pieces = this.pieces.stream().filter((piece) -> piece.getColor() == color).toList();
+        List<Piece> pieces = pieces().stream().filter((piece) -> piece.getColor() == color).toList();
         for (Piece piece : pieces) {
             for (Move m : piece.getMoves(this)) {
                 ret.add((ChessMove) m);
@@ -146,48 +143,6 @@ public class ChessBoard implements Board {
     @Override
     public PieceColor black() {
         return black;
-    }
-
-    @Override
-    public void applyMove(Move move) {
-        if(move instanceof ChessMove) {
-            pieceCoordinate.put(move.to(), move.piece());
-            pieceCoordinate.remove(move.from());
-            move.piece().setPieceCoordinate(move.to());
-            if (move.hasTag(ChessMoveTags.Capture)) {
-                if (move.hasTag(ChessMoveTags.EnPassant)) {
-                    pieceCoordinate.remove(((ChessMove) move).getAuxillaryPiece().getPieceCoordinate());
-                }
-                pieces().remove(((ChessMove) move).getAuxillaryPiece());
-            }
-            if (move.hasTag(ChessMoveTags.Castle)) {
-                pieceCoordinate.remove(((ChessMove) move).getAuxillaryPiece().getPieceCoordinate());
-                int direction = 5 - move.to().getColumn() < 0 ? -1 : 1;
-                ((ChessMove) move).getAuxillaryPiece().setPieceCoordinate(getCoordinate(
-                        move.to().getColumn() + direction,
-                        move.to().getRow()));
-                pieceCoordinate.put(((ChessMove) move).getAuxillaryPiece().getPieceCoordinate(), ((ChessMove) move).getAuxillaryPiece());
-            }
-        }
-    }
-
-    @Override
-    public void undoMove(Move move) {
-        if(move instanceof ChessMove) {
-            pieceCoordinate.put(move.from(), move.piece());
-            pieceCoordinate.remove(move.to());
-            move.piece().setPieceCoordinate(move.from());
-            if (move.hasTag(ChessMoveTags.Capture)) {
-                addPiece(((ChessMove) move).getAuxillaryPiece());
-            }
-            if (move.hasTag(ChessMoveTags.Castle)) {
-                int rookColumn = 5 - move.to().getColumn() < 0 ? 8 : 1;
-                ((ChessMove) move).getAuxillaryPiece().setPieceCoordinate(
-                        getCoordinate(
-                                rookColumn,
-                                ((ChessMove) move).getAuxillaryPiece().getPieceCoordinate().getRow()));
-            }
-        }
     }
 
     @Override
@@ -248,11 +203,16 @@ public class ChessBoard implements Board {
 
     @Override
     public List<Piece> pieces() {
-        return pieces;
+        return pieceCoordinate.values().stream().toList();
     }
 
     @Override
-    public Piece getPieceAtCoordinate(PieceCoordinate pc) {
+    public Piece getPiece(PieceCoordinate pc) {
         return pieceCoordinate.get(pc);
+    }
+
+    @Override
+    public void removePiece(PieceCoordinate pieceCoordinate) {
+        this.pieceCoordinate.remove(pieceCoordinate);
     }
 }

@@ -22,7 +22,7 @@ public class Pawn extends Piece {
     @Override
     public Set<ChessMove> getMoves(Board board) {
         Set<ChessMove> possibleMoves = new HashSet<>();
-        if(board instanceof ChessBoard) {
+        if (board instanceof ChessBoard) {
             PieceCoordinate from = this.getPieceCoordinate();
             PieceColor color = getColor();
             int verticalDir = color == PieceColor.WHITE ? 1 : -1;
@@ -51,12 +51,12 @@ public class Pawn extends Piece {
 
             possibleMoves.remove(null);
         }
-            return possibleMoves;
+        return possibleMoves;
     }
 
     private ChessMove moveForward(int horVal, int vertVal, int vertDir, ChessBoard board) {
-        PieceCoordinate newCoord = getCoordinate(horVal, vertVal  + vertDir);
-        Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+        PieceCoordinate newCoord = getCoordinate(horVal, vertVal + vertDir);
+        Piece existingPiece = board.getPiece(newCoord);
         if (existingPiece == null) {
             return new ChessMove(this, newCoord);
         }
@@ -73,14 +73,14 @@ public class Pawn extends Piece {
             if (newHorVal < 1 || newHorVal > 8)
                 continue;
             PieceCoordinate newCoord = getCoordinate(newHorVal, newVertVal);
-            Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+            Piece existingPiece = board.getPiece(newCoord);
             if (existingPiece != null && existingPiece.getColor() != this.getColor()) {
                 ChessMove move;
                 if (existingPiece instanceof King) {
                     move = new ChessMove(this, newCoord);
                     move.addTag(ChessMoveTags.AttacksKing);
                 } else {
-                    move = new ChessMove(this, newCoord,existingPiece);
+                    move = new ChessMove(this, newCoord, existingPiece);
                     move.addTag(ChessMoveTags.Capture);
                 }
                 ret.add(move);
@@ -102,10 +102,10 @@ public class Pawn extends Piece {
         }
         if (charge) {
             PieceCoordinate newCoord = getCoordinate(horVal, vertVal + vertDir);
-            Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+            Piece existingPiece = board.getPiece(newCoord);
             if (existingPiece == null) {
                 newCoord = getCoordinate(horVal, vertVal + vertDir * 2);
-                existingPiece = board.getPieceAtCoordinate(newCoord);
+                existingPiece = board.getPiece(newCoord);
                 if (existingPiece == null) {
                     ChessMove move = new ChessMove(this, newCoord);
                     move.addTag(ChessMoveTags.Charge);
@@ -134,13 +134,13 @@ public class Pawn extends Piece {
                 if (newHorVal < 1 || newHorVal > 8)
                     break;
                 PieceCoordinate newCoord = getCoordinate(newHorVal, vertVal);
-                Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+                Piece existingPiece = board.getPiece(newCoord);
                 if (existingPiece != null
                         && existingPiece.getColor() != this.getColor()
                         && existingPiece instanceof Pawn) {
                     newCoord = getCoordinate(horVal + i, vertVal + vertDir
                     );
-                    ChessMove move = new ChessMove(this, newCoord);
+                    ChessMove move = new ChessMove(this, newCoord, existingPiece);
                     move.addTag(ChessMoveTags.EnPassant);
                     move.addTag(ChessMoveTags.Capture);
                     ret.add(move);

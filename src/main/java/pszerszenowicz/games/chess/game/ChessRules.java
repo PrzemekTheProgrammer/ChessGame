@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 
 public class ChessRules implements Rules {
     @Override
-    public Set<ChessMove> legalMoves(Board board, PieceColor color, GameContext context) {
+    public Set<ChessMove> legalMoves(Board board, PieceColor actualPlayer, GameContext context) {
         if (!(board instanceof ChessBoard chessBoard) ||
                 !(context instanceof ChessContext chessContext)) {
             return Set.of();
         }
 
-        PieceColor opponentColor = (color == PieceColor.WHITE)
+        PieceColor opponentColor = (actualPlayer == PieceColor.WHITE)
                 ? PieceColor.BLACK
                 : PieceColor.WHITE;
 
-        return chessBoard.availableMoves(color).stream()
+        return chessBoard.availableMoves(actualPlayer).stream()
                 .filter(ChessMove.class::isInstance)
                 .map(ChessMove.class::cast)
                 .filter(move -> isMoveLegal(move, opponentColor, chessBoard, chessContext))
@@ -31,14 +31,13 @@ public class ChessRules implements Rules {
     }
 
     private boolean isMoveLegal(ChessMove move, PieceColor oponnentColor, ChessBoard board, ChessContext context) {
-        board.applyMove(move);
+        move.apply(board);
         Set<ChessMove> opponentMoves = board.availableMoves(oponnentColor);
 
         boolean kingAttacked = opponentMoves.stream()
                 .anyMatch(m -> m.getTags().contains(ChessMoveTags.AttacksKing));
-        board.undoMove(move);
+        move.undo(board);
         if (kingAttacked) {
-            board.undoMove(move);
             return false;
         }
 
@@ -51,19 +50,21 @@ public class ChessRules implements Rules {
         if (move.hasTag(ChessMoveTags.EnPassant) && !isEnPassantLegal(move, context)) {
             return false;
         }
-
-        board.undoMove(move);
         return true;
     }
 
     private boolean isCastleLegal(ChessMove move, Set<ChessMove> opponentMoves) {
-        int dir = move.to().getColumn() > 5 ? -1 : 1;
-        int passingColumn = move.to().getColumn() + dir;
-
-        return opponentMoves.stream().noneMatch(m ->
-                m.to().getColumn() == passingColumn ||
-                        m.getTags().contains(ChessMoveTags.AttacksKing)
-        );
+        int dir = move.to().getColumn() > move.from().getColumn() ? 1 : -1;
+        int row = move.from().getRow();
+        for(int passingColumn = move.from().getColumn()+dir; passingColumn != move.to().getColumn() + dir; passingColumn+=dir) {
+            final int col = passingColumn;
+            if (opponentMoves.stream().anyMatch(m ->
+                    (m.to().getColumn() == col && m.to().getRow()==row)
+            || m.hasTag(ChessMoveTags.AttacksKing))){
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isEnPassantLegal(ChessMove move, ChessContext context) {

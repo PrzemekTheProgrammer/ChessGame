@@ -10,6 +10,8 @@ public interface Move {
     PieceCoordinate to();
     PieceCoordinate from();
     Piece piece();
+    void apply(Board board);
+    void undo(Board board);
 
 
 }

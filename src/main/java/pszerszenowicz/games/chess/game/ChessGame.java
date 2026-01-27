@@ -6,8 +6,6 @@ import pszerszenowicz.domain.ports.Game;
 import pszerszenowicz.domain.ports.Move;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
-import pszerszenowicz.games.chess.piece.King;
-import pszerszenowicz.games.chess.piece.Rook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,7 @@ public class ChessGame implements Game {
     private final List<ChessMove> moveHistory = new ArrayList<>();
     private Set<ChessMove> legalMoves;
     private PieceColor actualPlayer;
-    private ChessRules chessRules;
+    private ChessRules chessRules = new ChessRules();
     private final ChessContext chessContext = new ChessContext(moveHistory);
 
     @Override
@@ -32,7 +30,7 @@ public class ChessGame implements Game {
     }
 
     private void executeMove(ChessMove move) {
-        board.applyMove(move);
+        move.apply(board);
         addToHistory(move);
     }
 
@@ -43,12 +41,6 @@ public class ChessGame implements Game {
     }
 
     private void postMoveUpdates(ChessMove move) {
-        if (move.piece() instanceof King king) {
-            king.loseCastleRight();
-        }
-        if (move.piece() instanceof Rook rook) {
-            rook.loseCastleRight();
-        }
         actualPlayer = actualPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
         legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
     }
@@ -58,7 +50,8 @@ public class ChessGame implements Game {
     }
 
     public void removeLastMoveFromHistory() {
-        moveHistory.remove(moveHistory.size() - 1);
+        if(!moveHistory.isEmpty()){
+            moveHistory.remove(moveHistory.size() - 1);
+        }
     }
-
 }

@@ -19,6 +19,10 @@ public class Rook extends Piece {
         canCastle = false;
     }
 
+    public void applyCastleRight() {
+        canCastle = true;
+    }
+
     public Rook(PieceCoordinate pieceCoordinate, PieceColor color) {
         super(pieceCoordinate, color);
     }
@@ -39,7 +43,7 @@ public class Rook extends Piece {
                     break;
                 }
                 PieceCoordinate newCoord = getCoordinate(newHorizontalValue, newVerticalValue);
-                Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+                Piece existingPiece = board.getPiece(newCoord);
                 if (existingPiece == null) {
                     possibleMoves.add(new ChessMove(this,newCoord));
                 } else {

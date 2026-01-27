@@ -14,13 +14,12 @@ public interface Board {
 
     Set<? extends Move> availableMoves(PieceColor p);
 
-    void applyMove(Move move);
-    void undoMove(Move move);
     void setBoard();
     void addPiece(Piece piece);
 
     List<Piece> pieces();
 
-    Piece getPieceAtCoordinate(PieceCoordinate pieceCoordinate);
+    Piece getPiece(PieceCoordinate pieceCoordinate);
+    void removePiece(PieceCoordinate pieceCoordinate);
 
 }

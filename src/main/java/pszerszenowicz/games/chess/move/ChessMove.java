@@ -1,9 +1,13 @@
 package pszerszenowicz.games.chess.move;
 
+import pszerszenowicz.domain.ports.Board;
 import pszerszenowicz.domain.ports.Move;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.Tag;
+import pszerszenowicz.games.chess.board.ChessBoard;
+import pszerszenowicz.games.chess.piece.King;
+import pszerszenowicz.games.chess.piece.Rook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +42,13 @@ public class ChessMove implements Move {
     @Override
     public void addTag(Tag tag) {
         if (tag instanceof ChessMoveTags) {
-            tags.add((ChessMoveTags)tag);
+            tags.add((ChessMoveTags) tag);
         }
     }
 
     @Override
     public boolean hasTag(Tag tag) {
-        if(tag instanceof ChessMoveTags) {
+        if (tag instanceof ChessMoveTags) {
             return tags.contains(tag);
         }
         return false;
@@ -58,6 +62,60 @@ public class ChessMove implements Move {
     @Override
     public Piece piece() {
         return piece;
+    }
+
+    @Override
+    public void apply(Board board) {
+        if (board instanceof ChessBoard) {
+            board.removePiece(from);
+            piece.setPieceCoordinate(to);
+            board.addPiece(piece);
+            if (hasTag(ChessMoveTags.EnPassant)) {
+                board.removePiece(auxillaryPiece.getPieceCoordinate());
+            }
+            if (hasTag(ChessMoveTags.Castle)) {
+                board.removePiece(auxillaryPiece.getPieceCoordinate());
+                int direction = to.getColumn() > from.getColumn() ? -1 : 1;
+                auxillaryPiece.setPieceCoordinate(ChessBoard.getCoordinate(
+                        to.getColumn() + direction,
+                        to.getRow()
+                ));
+                board.addPiece(auxillaryPiece);
+            }
+            if (piece instanceof King king) {
+                king.loseCastleRight();
+            }
+            if (piece instanceof Rook rook) {
+                rook.loseCastleRight();
+            }
+        }
+    }
+
+    @Override
+    public void undo(Board board) {
+        if (board instanceof ChessBoard) {
+            board.removePiece(to);
+            piece.setPieceCoordinate(from);
+            board.addPiece(piece);
+            if (hasTag(ChessMoveTags.Capture)) {
+                board.addPiece(auxillaryPiece);
+            }
+            if (hasTag(ChessMoveTags.Castle)) {
+                board.removePiece(auxillaryPiece.getPieceCoordinate());
+                int rookColumn = to.getColumn() > from.getColumn() ? 8 : 1;
+                auxillaryPiece.setPieceCoordinate(ChessBoard.getCoordinate(
+                        rookColumn,
+                        auxillaryPiece.getPieceCoordinate().getRow()
+                ));
+                board.addPiece(auxillaryPiece);
+            }
+            if (piece instanceof King king) {
+                king.applyCastleRight();
+            }
+            if (piece instanceof Rook rook) {
+                rook.applyCastleRight();
+            }
+        }
     }
 
     @Override

@@ -34,7 +34,7 @@ public class Knight extends Piece {
                     newHorizontalValue,
                     newVerticalValue);
 
-            Piece existingPiece = board.getPieceAtCoordinate(newCoord);
+            Piece existingPiece = board.getPiece(newCoord);
             if (existingPiece == null) {
                 possibleMoves.add(new ChessMove(this,newCoord));
             } else {
