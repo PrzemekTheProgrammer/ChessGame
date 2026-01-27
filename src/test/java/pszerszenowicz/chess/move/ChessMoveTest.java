@@ -14,8 +14,7 @@ import pszerszenowicz.games.chess.piece.Rook;
 
 import java.util.List;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static pszerszenowicz.games.chess.board.ChessBoard.*;
 
 public class ChessMoveTest {
@@ -35,8 +34,8 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(C1,D1)));
-        assertSame(testedPiece.getPieceCoordinate(), C1);
-        assertSame(tmpPiece.getPieceCoordinate(),D1);
+        assertSame(C1, testedPiece.getPieceCoordinate());
+        assertSame(D1, tmpPiece.getPieceCoordinate());
     }
 
     @Test
@@ -55,8 +54,8 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(G8,F8)));
-        assertSame(testedPiece.getPieceCoordinate(), G8);
-        assertSame(tmpPiece.getPieceCoordinate(),F8);
+        assertSame(G8, testedPiece.getPieceCoordinate());
+        assertSame(F8, tmpPiece.getPieceCoordinate());
     }
 
     @Test
@@ -75,8 +74,8 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.contains(H8));
-        assertSame(testedPiece.getPieceCoordinate(), H8);
-        assertTrue(pieceCoordinates.size() == 1);
+        assertSame(H8, testedPiece.getPieceCoordinate());
+        assertEquals(1, pieceCoordinates.size());
     }
 
     @Test
@@ -97,8 +96,8 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(A1,H8)));
-        assertSame(testedPiece.getPieceCoordinate(), A1);
-        assertTrue(pieceCoordinates.size() == 2);
+        assertSame(A1, testedPiece.getPieceCoordinate());
+        assertEquals(2, pieceCoordinates.size());
     }
 
     @Test
@@ -118,8 +117,8 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.contains(F3));
-        assertSame(testedPiece.getPieceCoordinate(), F3);
-        assertTrue(pieceCoordinates.size() == 1);
+        assertSame(F3, testedPiece.getPieceCoordinate());
+        assertEquals(1, pieceCoordinates.size());
     }
 
     @Test
@@ -139,9 +138,9 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(E1,A1)));
-        assertSame(testedPiece.getPieceCoordinate(), E1);
-        assertSame(tmpPiece.getPieceCoordinate(),A1);
-        assertTrue(pieceCoordinates.size() == 2);
+        assertSame(E1, testedPiece.getPieceCoordinate());
+        assertSame(A1, tmpPiece.getPieceCoordinate());
+        assertEquals(2, pieceCoordinates.size());
     }
 
     @Test
@@ -163,8 +162,8 @@ public class ChessMoveTest {
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
         //then
         assertTrue(pieceCoordinates.containsAll(List.of(E1,H8,A1)));
-        assertSame(testedPiece.getPieceCoordinate(), E1);
-        assertTrue(pieceCoordinates.size() == 3);
+        assertSame(E1, testedPiece.getPieceCoordinate());
+        assertEquals(3, pieceCoordinates.size());
     }
 
 }

@@ -116,7 +116,7 @@ public class ChessBoard implements Board {
     public ChessBoard(){
         white = PieceColor.WHITE;
         black = PieceColor.BLACK;
-    };
+    }
 
     @Override
     public void addPiece(Piece piece) {

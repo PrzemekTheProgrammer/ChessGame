@@ -23,7 +23,6 @@ public class Pawn extends Piece {
     public Set<ChessMove> getMoves(Board board) {
         Set<ChessMove> possibleMoves = new HashSet<>();
         if (board instanceof ChessBoard) {
-            PieceCoordinate from = this.getPieceCoordinate();
             PieceColor color = getColor();
             int verticalDir = color == PieceColor.WHITE ? 1 : -1;
             int horizontalValue = this.getPieceCoordinate().getColumn();

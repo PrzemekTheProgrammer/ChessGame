@@ -24,8 +24,6 @@ public class ChessRules implements Rules {
                 : PieceColor.WHITE;
 
         return chessBoard.availableMoves(actualPlayer).stream()
-                .filter(ChessMove.class::isInstance)
-                .map(ChessMove.class::cast)
                 .filter(move -> isMoveLegal(move, opponentColor, chessBoard, chessContext))
                 .collect(Collectors.toSet());
     }

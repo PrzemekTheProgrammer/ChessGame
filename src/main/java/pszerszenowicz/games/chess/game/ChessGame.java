@@ -17,7 +17,7 @@ public class ChessGame implements Game {
     private final List<ChessMove> moveHistory = new ArrayList<>();
     private Set<ChessMove> legalMoves;
     private PieceColor actualPlayer;
-    private ChessRules chessRules = new ChessRules();
+    private final ChessRules chessRules = new ChessRules();
     private final ChessContext chessContext = new ChessContext(moveHistory);
 
     @Override
@@ -25,7 +25,7 @@ public class ChessGame implements Game {
         if (move instanceof ChessMove) {
             validateMove((ChessMove) move);
             executeMove((ChessMove) move);
-            postMoveUpdates((ChessMove) move);
+            postMoveUpdates();
         }
     }
 
@@ -40,7 +40,7 @@ public class ChessGame implements Game {
         }
     }
 
-    private void postMoveUpdates(ChessMove move) {
+    private void postMoveUpdates() {
         actualPlayer = actualPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
         legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
     }
