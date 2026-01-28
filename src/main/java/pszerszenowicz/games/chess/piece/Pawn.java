@@ -10,6 +10,8 @@ import pszerszenowicz.domain.core.piece.PieceCoordinate;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static pszerszenowicz.games.chess.board.ChessBoard.getCoordinate;
 
@@ -27,6 +29,7 @@ public class Pawn extends Piece {
             int verticalDir = color == PieceColor.WHITE ? 1 : -1;
             int horizontalValue = this.getPieceCoordinate().getColumn();
             int verticalValue = this.getPieceCoordinate().getRow();
+            final int promotionRow = color == PieceColor.WHITE ? 8 : 1;
 
             // Ruch do przodu
             possibleMoves.add(
@@ -49,8 +52,24 @@ public class Pawn extends Piece {
             );
 
             possibleMoves.remove(null);
+            possibleMoves = possibleMoves.stream().flatMap(move ->
+                    move.to().getRow() == promotionRow
+                            ? promotionMoves(move)
+                            : Stream.of(move)
+            ).collect(Collectors.toSet());
+
         }
+
         return possibleMoves;
+    }
+
+    private Stream<ChessMove> promotionMoves(ChessMove move) {
+        return Stream.of(
+                new ChessMove(move, ChessMoveTags.PROMOTE_BISHOP),
+                new ChessMove(move, ChessMoveTags.PROMOTE_KNIGHT),
+                new ChessMove(move, ChessMoveTags.PROMOTE_ROOK),
+                new ChessMove(move, ChessMoveTags.PROMOTE_QUEEN)
+        );
     }
 
     private ChessMove moveForward(int horVal, int vertVal, int vertDir, ChessBoard board) {
@@ -131,7 +150,7 @@ public class Pawn extends Piece {
             for (int i : horizontalDir) {
                 int newHorVal = horVal + i;
                 if (newHorVal < 1 || newHorVal > 8)
-                    break;
+                    continue;
                 PieceCoordinate newCoord = getCoordinate(newHorVal, vertVal);
                 Piece existingPiece = board.getPiece(newCoord);
                 if (existingPiece != null

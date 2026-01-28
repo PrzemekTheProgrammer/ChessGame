@@ -20,6 +20,15 @@ public class ChessMove implements Move {
     private final ArrayList<ChessMoveTags> tags = new ArrayList<>();
     private final Piece auxillaryPiece;
 
+    public ChessMove(ChessMove source, ChessMoveTags additionalTag) {
+        this.piece = source.piece;
+        this.from = source.from;
+        this.to = source.to;
+        this.auxillaryPiece = source.auxillaryPiece;
+        this.tags.addAll(source.tags);
+        this.tags.add(additionalTag);
+    }
+
     public ChessMove(Piece piece, PieceCoordinate to, Piece auxillaryPiece) {
         this.from = piece.getPieceCoordinate();
         this.piece = piece;
