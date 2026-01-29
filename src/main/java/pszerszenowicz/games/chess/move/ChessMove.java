@@ -8,17 +8,14 @@ import pszerszenowicz.domain.ports.Tag;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.piece.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ChessMove implements Move {
     private final Piece piece;
     private final PieceCoordinate from;
     private final PieceCoordinate to;
-    private final ArrayList<ChessMoveTags> tags = new ArrayList<>();
+    private final EnumSet<ChessMoveTags> tags = EnumSet.noneOf(ChessMoveTags.class);
     private final Piece auxillaryPiece;
 
     public ChessMove(ChessMove source, ChessMoveTags additionalTag) {
@@ -45,7 +42,7 @@ public class ChessMove implements Move {
         return auxillaryPiece;
     }
 
-    public List<ChessMoveTags> getTags() {
+    public EnumSet<ChessMoveTags> getTags() {
         return tags;
     }
 
