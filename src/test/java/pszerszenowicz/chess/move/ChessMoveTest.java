@@ -166,4 +166,41 @@ public class ChessMoveTest {
         assertEquals(3, pieceCoordinates.size());
     }
 
+    @Test
+    public void promoteTest01() {
+        //given
+        Board board = new ChessBoard();
+        //when
+        Piece testedPiece = new Pawn(B7,board.black());
+        board.addPiece(testedPiece);
+        ChessMove move = new ChessMove(testedPiece,B8,testedPiece);
+        move.addTag(ChessMoveTags.PROMOTE_QUEEN);
+        move.apply(board);
+        List<Piece> pieces = board.pieces();
+        List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
+        //then
+        assertTrue(pieceCoordinates.contains(B8));
+        assertEquals(1, pieces.size());
+        assertTrue(board.getPiece(B8) instanceof Queen);
+    }
+
+    @Test
+    public void undoPromoteTest01() {
+        //given
+        Board board = new ChessBoard();
+        //when
+        Piece testedPiece = new Pawn(B7,board.black());
+        board.addPiece(testedPiece);
+        ChessMove move = new ChessMove(testedPiece,B8,testedPiece);
+        move.addTag(ChessMoveTags.PROMOTE_QUEEN);
+        move.apply(board);
+        move.undo(board);
+        List<Piece> pieces = board.pieces();
+        List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
+        //then
+        assertTrue(pieceCoordinates.contains(B7));
+        assertEquals(1, pieces.size());
+        assertTrue(board.getPiece(B7) instanceof Pawn);
+    }
+
 }

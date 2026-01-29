@@ -6,12 +6,13 @@ import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.Tag;
 import pszerszenowicz.games.chess.board.ChessBoard;
-import pszerszenowicz.games.chess.piece.King;
-import pszerszenowicz.games.chess.piece.Rook;
+import pszerszenowicz.games.chess.piece.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
 public class ChessMove implements Move {
     private final Piece piece;
@@ -90,6 +91,18 @@ public class ChessMove implements Move {
                         to.getRow()
                 ));
                 board.addPiece(auxillaryPiece);
+            }
+            if(hasTag(ChessMoveTags.PROMOTE_BISHOP)) {
+                board.addPiece(new Bishop(piece.getPieceCoordinate(), piece.getColor()));
+            }
+            if(hasTag(ChessMoveTags.PROMOTE_KNIGHT)) {
+                board.addPiece(new Knight(piece.getPieceCoordinate(), piece.getColor()));
+            }
+            if(hasTag(ChessMoveTags.PROMOTE_ROOK)) {
+                board.addPiece(new Rook(piece.getPieceCoordinate(), piece.getColor()));
+            }
+            if(hasTag(ChessMoveTags.PROMOTE_QUEEN)) {
+                board.addPiece(new Queen(piece.getPieceCoordinate(), piece.getColor()));
             }
             if (piece instanceof King king) {
                 king.loseCastleRight();
