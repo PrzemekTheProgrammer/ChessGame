@@ -19,14 +19,26 @@ public class ChessGame implements Game {
     private PieceColor actualPlayer;
     private final ChessRules chessRules = new ChessRules();
     private final ChessContext chessContext = new ChessContext(moveHistory);
+    private ChessGameStatus gameStatus;
+
 
     @Override
     public void makeMove(Move move) {
-        if (move instanceof ChessMove) {
-            validateMove((ChessMove) move);
-            executeMove((ChessMove) move);
-            postMoveUpdates();
+        if (gameStatus == ChessGameStatus.ONGOING) {
+            if (move instanceof ChessMove) {
+                validateMove((ChessMove) move);
+                executeMove((ChessMove) move);
+                postMoveUpdates();
+            }
         }
+    }
+
+    @Override
+    public void initGame() {
+        board.setBoard();
+        actualPlayer = board.white();
+        gameStatus = ChessGameStatus.ONGOING;
+        legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
     }
 
     private void executeMove(ChessMove move) {
@@ -43,6 +55,7 @@ public class ChessGame implements Game {
     private void postMoveUpdates() {
         actualPlayer = actualPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
         legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
+        gameStatus = (ChessGameStatus) chessRules.evaluateGameState(legalMoves, board, actualPlayer, moveHistory);
     }
 
     public void addToHistory(ChessMove move) {
@@ -50,7 +63,7 @@ public class ChessGame implements Game {
     }
 
     public void removeLastMoveFromHistory() {
-        if(!moveHistory.isEmpty()){
+        if (!moveHistory.isEmpty()) {
             moveHistory.remove(moveHistory.size() - 1);
         }
     }

@@ -1,13 +1,13 @@
 package pszerszenowicz.games.chess.game;
 
 import pszerszenowicz.domain.core.piece.PieceColor;
-import pszerszenowicz.domain.ports.Board;
-import pszerszenowicz.domain.ports.GameContext;
-import pszerszenowicz.domain.ports.Rules;
+import pszerszenowicz.domain.ports.*;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.piece.Pawn;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +26,27 @@ public class ChessRules implements Rules {
         return chessBoard.availableMoves(actualPlayer).stream()
                 .filter(move -> isMoveLegal(move, opponentColor, chessBoard, chessContext))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Tag evaluateGameState(Set<? extends Move> legalMoves,Board board, PieceColor currentPlayer, List<? extends Move> moveHistory) {
+        if (legalMoves.isEmpty()) {
+            PieceColor opponentPlayer = currentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+            if (board.availableMoves(opponentPlayer).stream().anyMatch(move -> move.hasTag(ChessMoveTags.AttacksKing))) {
+                if(currentPlayer== PieceColor.WHITE) {
+                    return ChessGameStatus.BLACK_WIN;
+                }else {
+                    return ChessGameStatus.WHITE_WIN;
+                }
+            }
+            return ChessGameStatus.STALEMATE;
+        }
+        if (moveHistory.size() >= 50) {
+            if( moveHistory.stream().skip(moveHistory.size() -50).noneMatch(move -> move.hasTag(ChessMoveTags.Capture) || move.piece() instanceof Pawn)) {
+                return ChessGameStatus.STALEMATE;
+            }
+        }
+        return ChessGameStatus.ONGOING;
     }
 
     private boolean isMoveLegal(ChessMove move, PieceColor oponnentColor, ChessBoard board, ChessContext context) {
