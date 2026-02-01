@@ -2,8 +2,8 @@ package pszerszenowicz.games.chess.game;
 
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.exception.MoveNotAvailableException;
-import pszerszenowicz.domain.ports.Game;
-import pszerszenowicz.domain.ports.Move;
+import pszerszenowicz.domain.ports.game.Game;
+import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
 
@@ -67,4 +67,5 @@ public class ChessGame implements Game {
             moveHistory.remove(moveHistory.size() - 1);
         }
     }
+
 }

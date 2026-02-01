@@ -1,7 +1,7 @@
 package pszerszenowicz.domain.core.piece;
 
-import pszerszenowicz.domain.ports.Board;
-import pszerszenowicz.domain.ports.Move;
+import pszerszenowicz.domain.ports.game.Board;
+import pszerszenowicz.domain.ports.game.Move;
 
 import java.util.Set;
 

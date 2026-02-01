@@ -1,7 +1,7 @@
 package pszerszenowicz.games.chess.game;
 
 import pszerszenowicz.domain.core.piece.PieceColor;
-import pszerszenowicz.domain.ports.*;
+import pszerszenowicz.domain.ports.game.*;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
@@ -29,7 +29,7 @@ public class ChessRules implements Rules {
     }
 
     @Override
-    public Tag evaluateGameState(Set<? extends Move> legalMoves,Board board, PieceColor currentPlayer, List<? extends Move> moveHistory) {
+    public GameStatus evaluateGameState(Set<? extends Move> legalMoves, Board board, PieceColor currentPlayer, List<? extends Move> moveHistory) {
         if (legalMoves.isEmpty()) {
             PieceColor opponentPlayer = currentPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
             if (board.availableMoves(opponentPlayer).stream().anyMatch(move -> move.hasTag(ChessMoveTags.AttacksKing))) {

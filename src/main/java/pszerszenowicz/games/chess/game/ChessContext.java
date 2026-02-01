@@ -1,6 +1,6 @@
 package pszerszenowicz.games.chess.game;
 
-import pszerszenowicz.domain.ports.GameContext;
+import pszerszenowicz.domain.ports.game.GameContext;
 import pszerszenowicz.games.chess.move.ChessMove;
 
 import java.util.Collections;

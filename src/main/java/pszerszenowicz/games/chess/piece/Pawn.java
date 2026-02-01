@@ -1,6 +1,6 @@
 package pszerszenowicz.games.chess.piece;
 
-import pszerszenowicz.domain.ports.Board;
+import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.games.chess.move.ChessMove;

@@ -1,15 +1,14 @@
 package pszerszenowicz.games.chess.move;
 
-import pszerszenowicz.domain.ports.Board;
-import pszerszenowicz.domain.ports.Move;
+import pszerszenowicz.domain.ports.game.Board;
+import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
-import pszerszenowicz.domain.ports.Tag;
+import pszerszenowicz.domain.ports.game.MoveTag;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.piece.*;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class ChessMove implements Move {
     private final Piece piece;
@@ -47,14 +46,14 @@ public class ChessMove implements Move {
     }
 
     @Override
-    public void addTag(Tag tag) {
+    public void addTag(MoveTag tag) {
         if (tag instanceof ChessMoveTags) {
             tags.add((ChessMoveTags) tag);
         }
     }
 
     @Override
-    public boolean hasTag(Tag tag) {
+    public boolean hasTag(MoveTag tag) {
         if (tag instanceof ChessMoveTags) {
             return tags.contains(tag);
         }

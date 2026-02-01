@@ -1,7 +1,7 @@
 package pszerszenowicz.games.chess.board;
 
-import pszerszenowicz.domain.ports.Board;
-import pszerszenowicz.domain.ports.Move;
+import pszerszenowicz.domain.ports.game.Board;
+import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
