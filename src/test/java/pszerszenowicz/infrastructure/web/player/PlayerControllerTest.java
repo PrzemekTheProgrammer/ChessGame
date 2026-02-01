@@ -41,7 +41,6 @@ class PlayerControllerTest {
 
     @Test
     void login_shouldReturnAuthResponse() throws Exception {
-        LoginCommand cmd = new LoginCommand("user1", "pass123");
         AuthResult resp = new AuthResult("fake-jwt-token");
 
         when(playerService.login(Mockito.any())).thenReturn(resp);

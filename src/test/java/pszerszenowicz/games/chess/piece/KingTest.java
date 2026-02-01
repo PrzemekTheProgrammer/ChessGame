@@ -24,7 +24,7 @@ public class KingTest {
         Board board = new ChessBoard();
         //when
         King testedPiece = new King(D6,board.white());
-        ((King) testedPiece).loseCastleRight();
+        testedPiece.loseCastleRight();
         board.addPiece(testedPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();
@@ -38,7 +38,7 @@ public class KingTest {
         Board board = new ChessBoard();
         //when
         King testedPiece = new King(A8,board.white());
-        ((King) testedPiece).loseCastleRight();
+        testedPiece.loseCastleRight();
         board.addPiece(testedPiece);
         Piece tmpPiece = new Pawn(A7,board.white());
         board.addPiece(tmpPiece);
@@ -80,7 +80,7 @@ public class KingTest {
         Board board = new ChessBoard();
         //when
         King testedPiece = new King(H1,board.white());
-        ((King) testedPiece).loseCastleRight();
+        testedPiece.loseCastleRight();
         board.addPiece(testedPiece);
         Piece tmpPiece = new Pawn(H2,board.white());
         board.addPiece(tmpPiece);

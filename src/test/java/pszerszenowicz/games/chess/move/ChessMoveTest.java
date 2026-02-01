@@ -179,7 +179,7 @@ public class ChessMoveTest {
         //then
         assertTrue(pieceCoordinates.contains(B8));
         assertEquals(1, pieces.size());
-        assertTrue(board.getPiece(B8) instanceof Queen);
+        assertInstanceOf(Queen.class, board.getPiece(B8));
     }
 
     @Test
@@ -198,7 +198,7 @@ public class ChessMoveTest {
         //then
         assertTrue(pieceCoordinates.contains(B7));
         assertEquals(1, pieces.size());
-        assertTrue(board.getPiece(B7) instanceof Pawn);
+        assertInstanceOf(Pawn.class, board.getPiece(B7));
     }
 
 }

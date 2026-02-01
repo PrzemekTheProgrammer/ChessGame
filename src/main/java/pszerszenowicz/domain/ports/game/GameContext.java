@@ -4,6 +4,6 @@ import java.util.Optional;
 
 public interface GameContext {
 
-    public Optional<? extends Move> lastMove();
+    Optional<? extends Move> lastMove();
 
 }
