@@ -1,4 +1,4 @@
-package pszerszenowicz.infrastructure.web.player;
+package pszerszenowicz.infrastructure.web.user;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.RestController;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
-import pszerszenowicz.application.PlayerService;
+import pszerszenowicz.application.UserService;
 import pszerszenowicz.infrastructure.web.auth.dto.AuthResponse;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
 import pszerszenowicz.infrastructure.web.auth.dto.RegisterRequest;
 
 @RestController
 @RequestMapping("/player")
-public class PlayerController {
+public class UserController {
 
-    private final PlayerService playerService;
+    private final UserService playerService;
 
-    public PlayerController(PlayerService playerService) {
+    public UserController(UserService playerService) {
         this.playerService = playerService;
     }
 

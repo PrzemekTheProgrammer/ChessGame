@@ -9,9 +9,6 @@ import java.util.Set;
 
 public interface Board {
 
-    PieceColor white();
-    PieceColor black();
-
     Set<? extends Move> availableMoves(PieceColor p);
 
     void setBoard();

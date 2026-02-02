@@ -5,19 +5,19 @@ import org.springframework.stereotype.Service;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
-import pszerszenowicz.domain.core.player.Player;
+import pszerszenowicz.domain.core.user.User;
 import pszerszenowicz.domain.exception.InvalidCredentialsException;
 import pszerszenowicz.domain.exception.UsernameAlreadyExistsException;
-import pszerszenowicz.domain.ports.player.PlayerRepository;
+import pszerszenowicz.domain.ports.user.UserRepository;
 import pszerszenowicz.infrastructure.security.jwt.JwtService;
 
 @Service
-public class PlayerService {
-    private final PlayerRepository playerRepo;
+public class UserService {
+    private final UserRepository playerRepo;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public PlayerService(PlayerRepository playerRepo,
+    public UserService(UserRepository playerRepo,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService) {
         this.playerRepo = playerRepo;
@@ -30,7 +30,7 @@ public class PlayerService {
         playerRepo.findByUsername(req.username())
                 .ifPresent(p -> { throw new UsernameAlreadyExistsException(req.username()); });
 
-        Player player = Player.register(
+        User player = User.register(
                 req.username(),
                 req.password(),
                 passwordEncoder);
@@ -42,7 +42,7 @@ public class PlayerService {
 
     // Logowanie
     public AuthResult login(LoginCommand req) {
-        Player player = playerRepo.findByUsername(req.username())
+        User player = playerRepo.findByUsername(req.username())
                 .orElseThrow(InvalidCredentialsException::new);
 
         if(!player.passwordMatches(req.password(),passwordEncoder)) {

@@ -19,13 +19,11 @@ public class ChessBoardTests {
 
         long piecesQuantity = board.pieces().size();
 
-        PieceColor white = board.white();
-        PieceColor black = board.black();
         long whitePiecesQuantity = board.pieces()
-                .stream().filter((piece) -> piece.getColor() == white)
+                .stream().filter((piece) -> piece.getColor() == PieceColor.WHITE)
                 .count();
         long blackPiecesQuantity = board.pieces()
-                .stream().filter((piece) -> piece.getColor() == black)
+                .stream().filter((piece) -> piece.getColor() == PieceColor.BLACK)
                 .count();
 
         long pawnsQuantity = board.pieces()

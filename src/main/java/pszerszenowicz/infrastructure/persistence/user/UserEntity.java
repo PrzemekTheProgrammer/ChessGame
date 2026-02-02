@@ -1,4 +1,4 @@
-package pszerszenowicz.infrastructure.persistence.player;
+package pszerszenowicz.infrastructure.persistence.user;
 
 import jakarta.persistence.*;
 
@@ -7,7 +7,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "players",
         uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-public class PlayerEntity {
+public class UserEntity {
 
     @Id
     private UUID id;
@@ -18,9 +18,9 @@ public class PlayerEntity {
     @Column(nullable = false)
     private String passwordHash;
 
-    protected PlayerEntity() {}
+    protected UserEntity() {}
 
-    public PlayerEntity(UUID id, String username, String passwordHash) {
+    public UserEntity(UUID id, String username, String passwordHash) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;

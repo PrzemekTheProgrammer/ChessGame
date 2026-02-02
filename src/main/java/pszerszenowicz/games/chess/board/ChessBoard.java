@@ -109,14 +109,9 @@ public class ChessBoard implements Board {
         return "" + (char) ('A' + horVal - 1) + verVal;
     }
 
-    private final PieceColor white;
-    private final PieceColor black;
     private final Map<PieceCoordinate, Piece> pieceCoordinate = new HashMap<>();
 
-    public ChessBoard(){
-        white = PieceColor.WHITE;
-        black = PieceColor.BLACK;
-    }
+    public ChessBoard(){}
 
     @Override
     public void addPiece(Piece piece) {
@@ -134,70 +129,60 @@ public class ChessBoard implements Board {
         }
         return ret;
     }
-
-    @Override
-    public PieceColor white() {
-        return white;
-    }
-
-    @Override
-    public PieceColor black() {
-        return black;
-    }
-
+    
     @Override
     public void setBoard() {
         PieceCoordinate tmp;
         Piece piece;
         for (int col = 1; col <= 8; col++) {
             tmp = getCoordinate(col, 2);
-            piece = new Pawn(tmp, this.white());
+            piece = new Pawn(tmp, PieceColor.WHITE);
             addPiece(piece);
         }
         for (int col = 1; col <= 8; col++) {
             tmp = getCoordinate(col, 7);
-            piece = new Pawn(tmp, this.black());
+            piece = new Pawn(tmp, PieceColor.BLACK);
             addPiece(piece);
         }
 
-        piece = new Rook(A1, this.white());
+        piece = new Rook(A1, PieceColor.WHITE);
         addPiece(piece);
-        piece = new Rook(H1, this.white());
-        addPiece(piece);
-
-        piece = new Rook(A8, this.black());
-        addPiece(piece);
-        piece = new Rook(H8, this.black());
+        piece = new Rook(H1, PieceColor.WHITE);
         addPiece(piece);
 
-        piece = new Knight(B1, this.white());
+        piece = new Rook(A8, PieceColor.BLACK);
         addPiece(piece);
-        piece = new Knight(G1, this.white());
-        addPiece(piece);
-
-        piece = new Knight(B8, this.black());
-        addPiece(piece);
-        piece = new Knight(G8, this.black());
+        piece = new Rook(H8, PieceColor.BLACK);
         addPiece(piece);
 
-        piece = new Bishop(C1, this.white());
+        piece = new Knight(B1, PieceColor.WHITE);
         addPiece(piece);
-        piece = new Bishop(F1, this.white());
-        addPiece(piece);
-
-        piece = new Bishop(C8, this.black());
-        addPiece(piece);
-        piece = new Bishop(F8, this.black());
+        piece = new Knight(G1, PieceColor.WHITE);
         addPiece(piece);
 
-        piece = new Queen(D1, this.white());
+        piece = new Knight(B8, PieceColor.BLACK);
         addPiece(piece);
-        piece = new Queen(D8, this.black());
+        piece = new Knight(G8, PieceColor.BLACK);
         addPiece(piece);
 
-        piece = new King(E1, this.white());
+        piece = new Bishop(C1, PieceColor.WHITE);
         addPiece(piece);
-        piece = new King(E8, this.black());
+        piece = new Bishop(F1, PieceColor.WHITE);
+        addPiece(piece);
+
+        piece = new Bishop(C8, PieceColor.BLACK);
+        addPiece(piece);
+        piece = new Bishop(F8, PieceColor.BLACK);
+        addPiece(piece);
+
+        piece = new Queen(D1, PieceColor.WHITE);
+        addPiece(piece);
+        piece = new Queen(D8, PieceColor.BLACK);
+        addPiece(piece);
+
+        piece = new King(E1, PieceColor.WHITE);
+        addPiece(piece);
+        piece = new King(E8, PieceColor.BLACK);
         addPiece(piece);
     }
 

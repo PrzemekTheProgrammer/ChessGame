@@ -1,16 +1,16 @@
-package pszerszenowicz.domain.core.player;
+package pszerszenowicz.domain.core.user;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pszerszenowicz.application.PlayerService;
+import pszerszenowicz.application.UserService;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
 import pszerszenowicz.domain.exception.InvalidCredentialsException;
 import pszerszenowicz.domain.exception.UsernameAlreadyExistsException;
-import pszerszenowicz.domain.ports.player.PlayerRepository;
+import pszerszenowicz.domain.ports.user.UserRepository;
 import pszerszenowicz.infrastructure.security.jwt.JwtService;
 
 import java.util.Optional;
@@ -19,10 +19,10 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PlayerServiceTest {
+class UserServiceTest {
 
     @Mock
-    private PlayerRepository playerRepo;
+    private UserRepository playerRepo;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -31,7 +31,7 @@ class PlayerServiceTest {
     private JwtService jwtService;
 
     @InjectMocks
-    private PlayerService playerService;
+    private UserService playerService;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class PlayerServiceTest {
     }
 
     @Test
-    void register_newPlayer_shouldSaveAndReturnToken() {
+    void register_newUser_shouldSaveAndReturnToken() {
         //given
         RegisterCommand req = new RegisterCommand("user1", "pass123");
         //when
@@ -50,7 +50,7 @@ class PlayerServiceTest {
         AuthResult response = playerService.register(req);
 
         assertEquals("jwt-token", response.token());
-        verify(playerRepo).save(any(Player.class));
+        verify(playerRepo).save(any(User.class));
     }
 
     @Test
@@ -59,7 +59,7 @@ class PlayerServiceTest {
         RegisterCommand req = new RegisterCommand("user1", "pass123");
         //when
         when(playerRepo.findByUsername("user1"))
-                .thenReturn(Optional.of(new Player(PlayerId.random(),"user1", "hashedPass")));
+                .thenReturn(Optional.of(new User(UserId.random(),"user1", "hashedPass")));
         //then
         assertThrows(UsernameAlreadyExistsException.class, () -> playerService.register(req));
     }
@@ -68,7 +68,7 @@ class PlayerServiceTest {
     void login_correctCredentials_shouldReturnToken() {
         //given
         LoginCommand req = new LoginCommand("user1", "pass123");
-        Player player = new Player("user1", "hashedPass", passwordEncoder);
+        User player = new User("user1", "hashedPass", passwordEncoder);
         //when
         when(playerRepo.findByUsername("user1")).thenReturn(Optional.of(player));
         when(player.passwordMatches("pass123", passwordEncoder)).thenReturn(true);
@@ -83,7 +83,7 @@ class PlayerServiceTest {
     void login_wrongPassword_shouldThrowException() {
         //given
         LoginCommand req = new LoginCommand("user1", "wrongpass");
-        Player player = new Player("user1", "hashedPass", passwordEncoder);
+        User player = new User("user1", "hashedPass", passwordEncoder);
         //when
         when(playerRepo.findByUsername("user1")).thenReturn(Optional.of(player));
         when(player.passwordMatches("wrongpass", passwordEncoder)).thenReturn(false);

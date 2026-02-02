@@ -2,6 +2,7 @@ package pszerszenowicz.games.chess.piece;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.board.ChessBoard;
@@ -23,7 +24,7 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(D6,board.white());
+        King testedPiece = new King(D6,PieceColor.WHITE);
         testedPiece.loseCastleRight();
         board.addPiece(testedPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
@@ -37,10 +38,10 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(A8,board.white());
+        King testedPiece = new King(A8,PieceColor.WHITE);
         testedPiece.loseCastleRight();
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(A7,board.white());
+        Piece tmpPiece = new Pawn(A7,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();
@@ -53,17 +54,17 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(E1,board.white());
+        King testedPiece = new King(E1,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(F1,board.white());
+        Piece tmpPiece = new Pawn(F1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(F2,board.black());
+        tmpPiece = new Pawn(F2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(E2,board.black());
+        tmpPiece = new Pawn(E2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(D2,board.black());
+        tmpPiece = new Pawn(D2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(D1,board.black());
+        tmpPiece = new Pawn(D1,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();
@@ -79,14 +80,14 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(H1,board.white());
+        King testedPiece = new King(H1,PieceColor.WHITE);
         testedPiece.loseCastleRight();
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(H2,board.white());
+        Piece tmpPiece = new Pawn(H2,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(G1,board.black());
+        tmpPiece = new Pawn(G1,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(G2,board.black());
+        tmpPiece = new Pawn(G2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();
@@ -101,12 +102,12 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(E1,board.white());
+        King testedPiece = new King(E1,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1,board.white());
+        Piece tmpPiece = new Rook(A1,PieceColor.WHITE);
         ((Rook) tmpPiece).loseCastleRight();
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(H1,board.white());
+        tmpPiece = new Rook(H1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();
@@ -121,11 +122,11 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(E1,board.white());
+        King testedPiece = new King(E1,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1,board.white());
+        Piece tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(H1,board.white());
+        tmpPiece = new Rook(H1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();
@@ -140,15 +141,15 @@ public class KingTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(E1,board.white());
+        King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H1,board.white());
+        Piece tmpPiece = new Rook(H1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(E2,board.white());
+        tmpPiece = new Pawn(E2,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(D2,board.black());
+        tmpPiece = new Pawn(D2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new King(F2,board.black());
+        tmpPiece = new King(F2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> kingMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> kingMoveCoordinate = kingMoves.stream().map(ChessMove::to).toList();

@@ -2,6 +2,7 @@ package pszerszenowicz.games.chess.move;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.board.ChessBoard;
@@ -21,9 +22,9 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(E1,board.white());
+        King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1,board.white());
+        Piece tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,C1,tmpPiece);
         move.addTag(ChessMoveTags.Castle);
@@ -41,9 +42,9 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        King testedPiece = new King(E8,board.black());
+        King testedPiece = new King(E8,PieceColor.BLACK);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.black());
+        Piece tmpPiece = new Rook(H8,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,G8,tmpPiece);
         move.addTag(ChessMoveTags.Castle);
@@ -61,9 +62,9 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Queen(E8,board.black());
+        Piece testedPiece = new Queen(E8,PieceColor.BLACK);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.white());
+        Piece tmpPiece = new Rook(H8,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,H8,tmpPiece);
         move.addTag(ChessMoveTags.Capture);
@@ -81,11 +82,11 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Queen(E1,board.black());
+        Piece testedPiece = new Queen(E1,PieceColor.BLACK);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.white());
+        Piece tmpPiece = new Rook(H8,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(A1,board.white());
+        tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,A1,tmpPiece);
         move.addTag(ChessMoveTags.Capture);
@@ -103,9 +104,9 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(E4,board.black());
+        Piece testedPiece = new Pawn(E4,PieceColor.BLACK);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(F4,board.white());
+        Piece tmpPiece = new Pawn(F4,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,F3,tmpPiece);
         move.addTag(ChessMoveTags.EnPassant);
@@ -124,9 +125,9 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new King(E1,board.white());
+        Piece testedPiece = new King(E1,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1,board.white());
+        Piece tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,C1,tmpPiece);
         move.addTag(ChessMoveTags.Castle);
@@ -146,11 +147,11 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Queen(E1,board.black());
+        Piece testedPiece = new Queen(E1,PieceColor.BLACK);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(H8,board.white());
+        Piece tmpPiece = new Rook(H8,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(A1,board.white());
+        tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,A1,tmpPiece);
         move.addTag(ChessMoveTags.Capture);
@@ -169,7 +170,7 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B7,board.black());
+        Piece testedPiece = new Pawn(B7,PieceColor.BLACK);
         board.addPiece(testedPiece);
         ChessMove move = new ChessMove(testedPiece,B8,testedPiece);
         move.addTag(ChessMoveTags.PROMOTE_QUEEN);
@@ -187,7 +188,7 @@ public class ChessMoveTest {
         //given
         Board board = new ChessBoard();
         //when
-        Piece testedPiece = new Pawn(B7,board.black());
+        Piece testedPiece = new Pawn(B7,PieceColor.BLACK);
         board.addPiece(testedPiece);
         ChessMove move = new ChessMove(testedPiece,B8,testedPiece);
         move.addTag(ChessMoveTags.PROMOTE_QUEEN);

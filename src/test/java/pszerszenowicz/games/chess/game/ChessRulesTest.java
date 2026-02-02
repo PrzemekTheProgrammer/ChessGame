@@ -26,16 +26,16 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King testedPiece = new King(E1, board.white());
+        King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Rook(A1, board.white());
+        Piece tmpPiece = new Rook(A1, PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(F1, board.white());
+        tmpPiece = new Rook(F1, PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(E6, board.black());
+        tmpPiece = new Rook(E6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, board.white(), context);
+        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -58,16 +58,16 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King testedPiece = new King(E1, board.white());
+        King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Rook testedPiece2 = new Rook(H3, board.white());
+        Rook testedPiece2 = new Rook(H3, PieceColor.WHITE);
         board.addPiece(testedPiece2);
-        Piece tmpPiece = new Rook(A1, board.white());
+        Piece tmpPiece = new Rook(A1, PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Rook(E6, board.black());
+        tmpPiece = new Rook(E6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, board.white(), context);
+        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -92,15 +92,15 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        Pawn testedPiece = new Pawn(F5, board.white());
+        Pawn testedPiece = new Pawn(F5, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(E5, board.black());
+        Piece tmpPiece = new Pawn(E5, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(tmpPiece,E5);
         move.addTag(ChessMoveTags.Charge);
         history.add(move);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, board.white(), context);
+        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -122,12 +122,12 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        Pawn testedPiece = new Pawn(F5, board.white());
+        Pawn testedPiece = new Pawn(F5, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(E5, board.black());
+        Piece tmpPiece = new Pawn(E5, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, board.white(), context);
+        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -154,16 +154,16 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King testedPiece = new King(E1, board.white());
+        King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Rook testedPiece2 = new Rook(H1, board.white());
+        Rook testedPiece2 = new Rook(H1, PieceColor.WHITE);
         board.addPiece(testedPiece2);
-        Rook testedPiece3 = new Rook(A1, board.white());
+        Rook testedPiece3 = new Rook(A1, PieceColor.WHITE);
         board.addPiece(testedPiece3);
-        Piece tmpPiece = new Rook(F6, board.black());
+        Piece tmpPiece = new Rook(F6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, board.white(), context);
+        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -208,14 +208,14 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King testedPiece = new King(H3, board.white());
+        King testedPiece = new King(H3, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Queen testedPiece2 = new Queen(G4, board.white());
+        Queen testedPiece2 = new Queen(G4, PieceColor.WHITE);
         board.addPiece(testedPiece2);
-        Bishop tmpPiece = new Bishop(D7, board.black());
+        Bishop tmpPiece = new Bishop(D7, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, board.white(), context);
+        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -242,9 +242,9 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King piece1 = new King(H3, board.white());
+        King piece1 = new King(H3, PieceColor.WHITE);
         board.addPiece(piece1);
-        Queen piece2 = new Queen(G4, board.black());
+        Queen piece2 = new Queen(G4, PieceColor.BLACK);
         board.addPiece(piece2);
         //when
         ChessGameStatus status = (ChessGameStatus) chessRules.evaluateGameState(
@@ -264,9 +264,9 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King piece1 = new King(A1, board.white());
+        King piece1 = new King(A1, PieceColor.WHITE);
         board.addPiece(piece1);
-        Queen piece2 = new Queen(B3, board.black());
+        Queen piece2 = new Queen(B3, PieceColor.BLACK);
         board.addPiece(piece2);
         //when
         ChessGameStatus status = (ChessGameStatus) chessRules.evaluateGameState(
@@ -286,11 +286,11 @@ public class ChessRulesTest {
         Board board = new ChessBoard();
         List<ChessMove> history = new ArrayList<>();
         ChessContext context = new ChessContext(history);
-        King piece1 = new King(A1, board.white());
+        King piece1 = new King(A1, PieceColor.WHITE);
         board.addPiece(piece1);
-        Queen piece2 = new Queen(B2, board.black());
+        Queen piece2 = new Queen(B2, PieceColor.BLACK);
         board.addPiece(piece2);
-        Queen piece3 = new Queen(A2, board.black());
+        Queen piece3 = new Queen(A2, PieceColor.BLACK);
         board.addPiece(piece3);
         //when
         ChessGameStatus status = (ChessGameStatus) chessRules.evaluateGameState(

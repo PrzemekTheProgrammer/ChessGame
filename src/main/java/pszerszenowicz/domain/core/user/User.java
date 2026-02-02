@@ -1,41 +1,41 @@
-package pszerszenowicz.domain.core.player;
+package pszerszenowicz.domain.core.user;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class Player {
-    private final PlayerId id;
+public class User {
+    private final UserId id;
     private String userName;
     private String passwordHash;
 
-    public static Player register(
+    public static User register(
             String username,
             String rawPassword,
             PasswordEncoder encoder
     ) {
-        return new Player(username, rawPassword, encoder);
+        return new User(username, rawPassword, encoder);
     }
 
-    public static Player restore(
-            PlayerId id,
+    public static User restore(
+            UserId id,
             String username,
             String passwordHash
     ) {
-        return new Player(id, username, passwordHash);
+        return new User(id, username, passwordHash);
     }
 
-    protected Player(String userName, String password, PasswordEncoder encoder) {
-        this.id = PlayerId.random();
+    protected User(String userName, String password, PasswordEncoder encoder) {
+        this.id = UserId.random();
         this.userName = userName;
         this.passwordHash = encoder.encode(password);
     }
 
-    protected Player(PlayerId id, String userName, String passwordHash) {
+    protected User(UserId id, String userName, String passwordHash) {
         this.id = id;
         this.userName = userName;
         this.passwordHash = passwordHash;
     }
 
-    public PlayerId getId() {
+    public UserId getId() {
         return id;
     }
 

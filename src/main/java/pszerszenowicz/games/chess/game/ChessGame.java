@@ -1,14 +1,19 @@
 package pszerszenowicz.games.chess.game;
 
+import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.exception.MoveNotAvailableException;
+import pszerszenowicz.domain.exception.MoveNotAvailableForPlayerException;
+import pszerszenowicz.domain.exception.PlayerNotInGameException;
 import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
+import pszerszenowicz.domain.ports.game.Player;
 import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class ChessGame implements Game {
@@ -20,10 +25,19 @@ public class ChessGame implements Game {
     private final ChessRules chessRules = new ChessRules();
     private final ChessContext chessContext = new ChessContext(moveHistory);
     private ChessGameStatus gameStatus;
+    private final Player white;
+    private final Player black;
+    private final GameId gameId;
 
+    public ChessGame(Player white, Player black) {
+        this.white = Objects.requireNonNull(white);
+        this.black = Objects.requireNonNull(black);
+        this.gameId = GameId.random();
+    }
 
     @Override
-    public void makeMove(Move move) {
+    public void makeMove(Move move, Player player) {
+        validateTurn(player);
         if (gameStatus == ChessGameStatus.ONGOING) {
             if (move instanceof ChessMove) {
                 validateMove((ChessMove) move);
@@ -36,7 +50,7 @@ public class ChessGame implements Game {
     @Override
     public void initGame() {
         board.setBoard();
-        actualPlayer = board.white();
+        actualPlayer = PieceColor.WHITE;
         gameStatus = ChessGameStatus.ONGOING;
         legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
     }
@@ -66,6 +80,18 @@ public class ChessGame implements Game {
         if (!moveHistory.isEmpty()) {
             moveHistory.remove(moveHistory.size() - 1);
         }
+    }
+
+    private void validateTurn(Player player) {
+        if (actualPlayer != colorOf(player)) {
+            throw new MoveNotAvailableForPlayerException();
+        }
+    }
+
+    public PieceColor colorOf(Player player) {
+        if (player.equals(white)) return PieceColor.WHITE;
+        if (player.equals(black)) return PieceColor.BLACK;
+        throw new PlayerNotInGameException();
     }
 
 }

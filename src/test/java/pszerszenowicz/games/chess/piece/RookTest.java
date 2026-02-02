@@ -2,6 +2,7 @@ package pszerszenowicz.games.chess.piece;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.board.ChessBoard;
@@ -22,7 +23,7 @@ public class RookTest {
         //given
         Board board = new ChessBoard();
         //when
-        Rook testedPiece = new Rook(D4,board.white());
+        Rook testedPiece = new Rook(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
         Set<ChessMove> rookMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
@@ -35,9 +36,9 @@ public class RookTest {
         //given
         Board board = new ChessBoard();
         //when
-        Rook testedPiece = new Rook(A1,board.white());
+        Rook testedPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(A4,board.white());
+        Piece tmpPiece = new Pawn(A4,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         Set<ChessMove> rookMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
@@ -50,15 +51,15 @@ public class RookTest {
         //given
         Board board = new ChessBoard();
         //when
-        Rook testedPiece = new Rook(D4,board.white());
+        Rook testedPiece = new Rook(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(D3,board.white());
+        Piece tmpPiece = new Pawn(D3,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(D5,board.white());
+        tmpPiece = new Pawn(D5,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(C4,board.black());
+        tmpPiece = new Pawn(C4,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(E4,board.black());
+        tmpPiece = new Pawn(E4,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> rookMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
@@ -74,13 +75,13 @@ public class RookTest {
         //given
         Board board = new ChessBoard();
         //when
-        Rook testedPiece = new Rook(A3,board.white());
+        Rook testedPiece = new Rook(A3,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(A2,board.white());
+        Piece tmpPiece = new Pawn(A2,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(B3,board.black());
+        tmpPiece = new Pawn(B3,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(A4,board.black());
+        tmpPiece = new Pawn(A4,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> rookMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
@@ -95,13 +96,13 @@ public class RookTest {
         //given
         Board board = new ChessBoard();
         //when
-        Rook testedPiece = new Rook(H5,board.white());
+        Rook testedPiece = new Rook(H5, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(H1,board.white());
+        Piece tmpPiece = new Pawn(H1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(H7,board.black());
+        tmpPiece = new Pawn(H7,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new King(D5,board.black());
+        tmpPiece = new King(D5,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> rookMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();

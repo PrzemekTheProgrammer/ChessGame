@@ -1,4 +1,4 @@
-package pszerszenowicz.infrastructure.web.player;
+package pszerszenowicz.infrastructure.web.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pszerszenowicz.application.PlayerService;
+import pszerszenowicz.application.UserService;
 import pszerszenowicz.application.dto.AuthResult;
-import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
 
@@ -22,15 +21,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class PlayerControllerTest {
+class UserControllerTest {
 
     private MockMvc mockMvc;
 
     @Autowired
-    private PlayerController playerController;
+    private UserController playerController;
 
     @MockitoBean
-    private PlayerService playerService;
+    private UserService playerService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

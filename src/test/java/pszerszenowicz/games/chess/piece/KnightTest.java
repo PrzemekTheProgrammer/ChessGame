@@ -2,6 +2,7 @@ package pszerszenowicz.games.chess.piece;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.board.ChessBoard;
@@ -22,7 +23,7 @@ public class KnightTest {
         //given
         Board board = new ChessBoard();
         //when
-        Knight testedPiece = new Knight(D4,board.white());
+        Knight testedPiece = new Knight(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
         Set<ChessMove> knightMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> knightMoveCoordinate = knightMoves.stream().map(ChessMove::to).toList();
@@ -35,7 +36,7 @@ public class KnightTest {
         //given
         Board board = new ChessBoard();
         //when
-        Knight testedPiece = new Knight(H7,board.white());
+        Knight testedPiece = new Knight(H7,PieceColor.WHITE);
         board.addPiece(testedPiece);
         Set<ChessMove> knightMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> knightMoveCoordinate = knightMoves.stream().map(ChessMove::to).toList();
@@ -48,11 +49,11 @@ public class KnightTest {
         //given
         Board board = new ChessBoard();
         //when
-        Knight testedPiece = new Knight(A8,board.white());
+        Knight testedPiece = new Knight(A8,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(C7,board.white());
+        Piece tmpPiece = new Pawn(C7,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(B6,board.black());
+        tmpPiece = new Pawn(B6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> knightMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> knightMoveCoordinate = knightMoves.stream().map(ChessMove::to).toList();
@@ -67,15 +68,15 @@ public class KnightTest {
         //given
         Board board = new ChessBoard();
         //when
-        Knight testedPiece = new Knight(G7,board.white());
+        Knight testedPiece = new Knight(G7,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(E8,board.white());
+        Piece tmpPiece = new Pawn(E8,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(E6,board.black());
+        tmpPiece = new Pawn(E6,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(F5,board.black());
+        tmpPiece = new Pawn(F5,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(H5,board.black());
+        tmpPiece = new Pawn(H5,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> knightMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> knightMoveCoordinate = knightMoves.stream().map(ChessMove::to).toList();
@@ -90,13 +91,13 @@ public class KnightTest {
         //given
         Board board = new ChessBoard();
         //when
-        Knight testedPiece = new Knight(B2,board.white());
+        Knight testedPiece = new Knight(B2,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(A4,board.white());
+        Piece tmpPiece = new Pawn(A4,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        tmpPiece = new King(C4,board.black());
+        tmpPiece = new King(C4,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        tmpPiece = new Pawn(D3,board.black());
+        tmpPiece = new Pawn(D3,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         Set<ChessMove> knightMoves = testedPiece.getMoves(board);
         List<PieceCoordinate> knightMoveCoordinate = knightMoves.stream().map(ChessMove::to).toList();

@@ -8,8 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pszerszenowicz.domain.core.player.Player;
-import pszerszenowicz.domain.ports.player.PlayerRepository;
+import pszerszenowicz.domain.core.user.User;
+import pszerszenowicz.domain.ports.user.UserRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,9 +18,9 @@ import java.util.UUID;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final PlayerRepository playerRepo;
+    private final UserRepository playerRepo;
 
-    public JwtAuthenticationFilter(JwtService jwtService, PlayerRepository playerRepo) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository playerRepo) {
         this.jwtService = jwtService;
         this.playerRepo = playerRepo;
     }
@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             try {
                 UUID playerId = jwtService.parse(token);
-                Player player = playerRepo.findById(playerId)
+                User player = playerRepo.findById(playerId)
                         .orElseThrow(() -> new RuntimeException("Player not found"));
 
                 // Tworzymy Authentication
