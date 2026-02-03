@@ -1,4 +1,4 @@
-package pszerszenowicz.domain.exception;
+package pszerszenowicz.application.exception;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException() {

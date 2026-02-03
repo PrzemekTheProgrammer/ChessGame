@@ -1,4 +1,4 @@
-package pszerszenowicz.application;
+package pszerszenowicz.application.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,7 @@ import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
 import pszerszenowicz.domain.core.user.User;
-import pszerszenowicz.domain.exception.InvalidCredentialsException;
+import pszerszenowicz.application.exception.InvalidCredentialsException;
 import pszerszenowicz.domain.exception.UsernameAlreadyExistsException;
 import pszerszenowicz.domain.ports.user.UserRepository;
 import pszerszenowicz.infrastructure.security.jwt.JwtService;

@@ -55,6 +55,16 @@ public class ChessGame implements Game {
         legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
     }
 
+    @Override
+    public GameId getGameId() {
+        return gameId;
+    }
+
+    @Override
+    public boolean hasPlayer(Player p) {
+        return p.equals(white) || p.equals(black);
+    }
+
     private void executeMove(ChessMove move) {
         move.apply(board);
         addToHistory(move);

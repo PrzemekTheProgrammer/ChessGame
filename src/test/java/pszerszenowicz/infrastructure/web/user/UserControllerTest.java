@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pszerszenowicz.application.UserService;
+import pszerszenowicz.application.service.UserService;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.RegisterCommand;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;

@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pszerszenowicz.domain.exception.InvalidCredentialsException;
+import pszerszenowicz.application.exception.InvalidCredentialsException;
 import pszerszenowicz.domain.exception.UsernameAlreadyExistsException;
 import pszerszenowicz.infrastructure.web.error.dto.ApiError;
 
