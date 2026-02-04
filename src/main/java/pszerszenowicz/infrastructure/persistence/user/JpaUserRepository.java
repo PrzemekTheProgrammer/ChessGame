@@ -2,7 +2,7 @@ package pszerszenowicz.infrastructure.persistence.user;
 
 import org.springframework.stereotype.Repository;
 import pszerszenowicz.domain.core.user.User;
-import pszerszenowicz.domain.ports.user.UserRepository;
+import pszerszenowicz.application.ports.user.UserRepository;
 
 import java.util.Optional;
 import java.util.UUID;

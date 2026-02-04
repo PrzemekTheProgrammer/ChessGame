@@ -1,4 +1,4 @@
-package pszerszenowicz.domain.ports.user;
+package pszerszenowicz.application.ports.user;
 
 import pszerszenowicz.domain.core.user.User;
 

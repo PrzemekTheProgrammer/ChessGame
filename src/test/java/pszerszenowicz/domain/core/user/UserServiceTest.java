@@ -4,13 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pszerszenowicz.application.service.UserService;
+import pszerszenowicz.application.user.UserService;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
 import pszerszenowicz.application.exception.InvalidCredentialsException;
 import pszerszenowicz.domain.exception.UsernameAlreadyExistsException;
-import pszerszenowicz.domain.ports.user.UserRepository;
+import pszerszenowicz.application.ports.user.UserRepository;
 import pszerszenowicz.infrastructure.security.jwt.JwtService;
 
 import java.util.Optional;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
 
     @Mock
-    private UserRepository playerRepo;
+    private UserRepository userRepo;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -31,7 +31,7 @@ class UserServiceTest {
     private JwtService jwtService;
 
     @InjectMocks
-    private UserService playerService;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
@@ -43,14 +43,14 @@ class UserServiceTest {
         //given
         RegisterCommand req = new RegisterCommand("user1", "pass123");
         //when
-        when(playerRepo.findByUsername("user1")).thenReturn(Optional.empty());
+        when(userRepo.findByUsername("user1")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("pass123")).thenReturn("hashedPass");
         when(jwtService.generate(any(UUID.class))).thenReturn("jwt-token");
         //then
-        AuthResult response = playerService.register(req);
+        AuthResult response = userService.register(req);
 
         assertEquals("jwt-token", response.token());
-        verify(playerRepo).save(any(User.class));
+        verify(userRepo).save(any(User.class));
     }
 
     @Test
@@ -58,10 +58,10 @@ class UserServiceTest {
         //given
         RegisterCommand req = new RegisterCommand("user1", "pass123");
         //when
-        when(playerRepo.findByUsername("user1"))
+        when(userRepo.findByUsername("user1"))
                 .thenReturn(Optional.of(new User(UserId.random(),"user1", "hashedPass")));
         //then
-        assertThrows(UsernameAlreadyExistsException.class, () -> playerService.register(req));
+        assertThrows(UsernameAlreadyExistsException.class, () -> userService.register(req));
     }
 
     @Test
@@ -70,11 +70,11 @@ class UserServiceTest {
         LoginCommand req = new LoginCommand("user1", "pass123");
         User player = new User("user1", "hashedPass", passwordEncoder);
         //when
-        when(playerRepo.findByUsername("user1")).thenReturn(Optional.of(player));
+        when(userRepo.findByUsername("user1")).thenReturn(Optional.of(player));
         when(player.passwordMatches("pass123", passwordEncoder)).thenReturn(true);
         when(jwtService.generate(player.getId().uuid())).thenReturn("jwt-token");
         //then
-        AuthResult response = playerService.login(req);
+        AuthResult response = userService.login(req);
 
         assertEquals("jwt-token", response.token());
     }
@@ -85,9 +85,9 @@ class UserServiceTest {
         LoginCommand req = new LoginCommand("user1", "wrongpass");
         User player = new User("user1", "hashedPass", passwordEncoder);
         //when
-        when(playerRepo.findByUsername("user1")).thenReturn(Optional.of(player));
+        when(userRepo.findByUsername("user1")).thenReturn(Optional.of(player));
         when(player.passwordMatches("wrongpass", passwordEncoder)).thenReturn(false);
         //then
-        assertThrows(InvalidCredentialsException.class, () -> playerService.login(req));
+        assertThrows(InvalidCredentialsException.class, () -> userService.login(req));
     }
 }

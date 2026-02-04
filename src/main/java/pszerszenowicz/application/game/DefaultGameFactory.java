@@ -1,6 +1,7 @@
 package pszerszenowicz.application.game;
 
 import org.springframework.stereotype.Component;
+import pszerszenowicz.application.exception.UnsupportedGameTypeException;
 import pszerszenowicz.application.ports.game.GameCreator;
 import pszerszenowicz.application.ports.game.GameFactory;
 import pszerszenowicz.domain.core.game.GameType;
@@ -26,6 +27,10 @@ public class DefaultGameFactory implements GameFactory {
 
     @Override
     public Game create(GameType gameType, Player p1, Player p2) {
-        return creators.get(gameType).create(p1,p2);
+        GameCreator creator = creators.get(gameType);
+        if (creator==null) {
+            throw new UnsupportedGameTypeException(gameType);
+        }
+        return creator.create(p1,p2);
     }
 }

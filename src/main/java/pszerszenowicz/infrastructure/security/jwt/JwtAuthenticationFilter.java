@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pszerszenowicz.domain.core.user.User;
-import pszerszenowicz.domain.ports.user.UserRepository;
+import pszerszenowicz.application.ports.user.UserRepository;
 
 import java.io.IOException;
 import java.util.List;

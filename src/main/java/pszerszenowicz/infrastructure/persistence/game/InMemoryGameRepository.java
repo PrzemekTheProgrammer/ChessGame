@@ -1,5 +1,6 @@
 package pszerszenowicz.infrastructure.persistence.game;
 
+import org.springframework.stereotype.Component;
 import pszerszenowicz.application.ports.game.GameRepository;
 import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.ports.game.Game;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class InMemoryGameRepository implements GameRepository {
 
     private final Map<GameId, Game> games = new ConcurrentHashMap<>();

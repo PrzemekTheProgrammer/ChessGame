@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.LoginCommand;
 import pszerszenowicz.application.dto.RegisterCommand;
-import pszerszenowicz.application.service.UserService;
+import pszerszenowicz.application.user.UserService;
 import pszerszenowicz.infrastructure.web.auth.dto.AuthResponse;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
 import pszerszenowicz.infrastructure.web.auth.dto.RegisterRequest;

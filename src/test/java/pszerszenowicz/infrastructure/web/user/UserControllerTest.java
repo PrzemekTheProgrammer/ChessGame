@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pszerszenowicz.application.service.UserService;
+import pszerszenowicz.application.user.UserService;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.RegisterCommand;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
@@ -26,23 +26,23 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private UserController playerController;
+    private UserController userController;
 
     @MockitoBean
-    private UserService playerService;
+    private UserService userService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(playerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
     @Test
     void login_shouldReturnAuthResponse() throws Exception {
         AuthResult resp = new AuthResult("fake-jwt-token");
 
-        when(playerService.login(Mockito.any())).thenReturn(resp);
+        when(userService.login(Mockito.any())).thenReturn(resp);
 
         mockMvc.perform(post("/player/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +57,7 @@ class UserControllerTest {
         RegisterCommand req = new RegisterCommand("user1", "pass123");
         AuthResult resp = new AuthResult("fake-jwt-token");
 
-        when(playerService.register(req)).thenReturn(resp);
+        when(userService.register(req)).thenReturn(resp);
 
         mockMvc.perform(post("/player/register")
                 .contentType("application/json")

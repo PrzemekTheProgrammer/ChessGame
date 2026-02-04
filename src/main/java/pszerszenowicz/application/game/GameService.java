@@ -1,4 +1,4 @@
-package pszerszenowicz.application.service;
+package pszerszenowicz.application.game;
 
 import org.springframework.stereotype.Service;
 import pszerszenowicz.application.exception.GameNotFoundException;
