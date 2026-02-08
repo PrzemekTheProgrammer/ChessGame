@@ -1,18 +1,20 @@
 package pszerszenowicz.infrastructure.web.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pszerszenowicz.application.user.UserService;
 import pszerszenowicz.application.dto.AuthResult;
 import pszerszenowicz.application.dto.RegisterCommand;
+import pszerszenowicz.application.user.UserService;
+import pszerszenowicz.infrastructure.security.jwt.JwtAuthenticationFilter;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
 
 import static org.mockito.Mockito.when;
@@ -20,9 +22,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@WebMvcTest(controllers = UserController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtAuthenticationFilter.class
+        ))
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -32,11 +40,6 @@ class UserControllerTest {
     private UserService userService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-    }
 
     @Test
     void login_shouldReturnAuthResponse() throws Exception {
