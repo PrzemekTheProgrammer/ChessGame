@@ -7,7 +7,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "players",
         uniqueConstraints = @UniqueConstraint(columnNames = "username"))
-public class UserEntity {
+class UserEntity {
 
     @Id
     private UUID id;

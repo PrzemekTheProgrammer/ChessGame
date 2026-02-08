@@ -6,7 +6,7 @@ import pszerszenowicz.domain.core.user.UserId;
 
 
 @Component
-public class UserMapper {
+class UserMapper {
 
     public User toDomain(UserEntity e) {
         return User.restore(

@@ -16,15 +16,15 @@ import pszerszenowicz.infrastructure.web.auth.dto.RegisterRequest;
 @RequestMapping("/player")
 public class UserController {
 
-    private final UserService playerService;
+    private final UserService userService;
 
     public UserController(UserService playerService) {
-        this.playerService = playerService;
+        this.userService = playerService;
     }
 
     @PostMapping("/register")
     public AuthResponse register(@RequestBody RegisterRequest req) {
-        AuthResult result = playerService.register(
+        AuthResult result = userService.register(
                 new RegisterCommand(req.username(), req.password())
         );
         return new AuthResponse(result.token());
@@ -32,7 +32,7 @@ public class UserController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest req) {
-        AuthResult result = playerService.login(
+        AuthResult result = userService.login(
                 new LoginCommand(req.username(), req.password())
         );
         return new AuthResponse(result.token());
