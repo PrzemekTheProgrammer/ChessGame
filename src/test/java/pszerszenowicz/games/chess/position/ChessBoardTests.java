@@ -2,7 +2,6 @@ package pszerszenowicz.games.chess.position;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.PieceColor;
-import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.piece.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

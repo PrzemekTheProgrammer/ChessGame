@@ -4,10 +4,10 @@ import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 
 public class ChessPositionSnapshot {
-    private PieceColor sideToMove;
-    private CastlingRights castlingRights;
-    private PieceCoordinate enPassantSquare;
-    private int halfMoveClock;
+    private final PieceColor sideToMove;
+    private final CastlingRights castlingRights;
+    private final PieceCoordinate enPassantSquare;
+    private final int halfMoveClock;
 
     public ChessPositionSnapshot(ChessPosition chessPosition) {
         this.sideToMove = chessPosition.getSideToMove();

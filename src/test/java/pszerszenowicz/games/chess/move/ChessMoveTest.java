@@ -4,13 +4,11 @@ import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
-import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.domain.ports.game.Position;
-import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.piece.King;
 import pszerszenowicz.games.chess.piece.Pawn;
 import pszerszenowicz.games.chess.piece.Queen;
 import pszerszenowicz.games.chess.piece.Rook;
+import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.List;

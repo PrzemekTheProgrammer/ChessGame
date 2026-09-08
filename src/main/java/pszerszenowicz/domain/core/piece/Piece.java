@@ -1,8 +1,6 @@
 package pszerszenowicz.domain.core.piece;
 
-import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.domain.ports.game.Move;
-import pszerszenowicz.domain.ports.game.Position;
 import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.Set;

@@ -4,19 +4,17 @@ import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
-import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.position.ChessPosition;
-
 
 import java.util.List;
 import java.util.Set;
 
-import static pszerszenowicz.games.chess.position.ChessBoard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static pszerszenowicz.games.chess.position.ChessBoard.*;
 
 public class KnightTest {
     @Test

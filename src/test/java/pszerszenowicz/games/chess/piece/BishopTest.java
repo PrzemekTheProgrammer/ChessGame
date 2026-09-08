@@ -22,11 +22,11 @@ public class BishopTest {
     @Test
     public void getBishopMoves_MoveOnly1() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
         //when
         Bishop testedPiece = new Bishop(A1,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        ChessPosition position = new ChessPosition((ChessBoard)board);
+        ChessPosition position = new ChessPosition(board);
         Set<ChessMove> bishopMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> bishopMoveCoordinate = bishopMoves.stream().map(ChessMove::to).toList();
         //then
@@ -37,11 +37,11 @@ public class BishopTest {
     @Test
     public void getBishopMoves_MoveOnly2() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
         //when
         Bishop testedPiece = new Bishop(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
-        ChessPosition position = new ChessPosition((ChessBoard)board);
+        ChessPosition position = new ChessPosition(board);
         Set<ChessMove> bishopMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> bishopMoveCoordinate = bishopMoves.stream().map(ChessMove::to).toList();
         //then
@@ -51,7 +51,7 @@ public class BishopTest {
     @Test
     public void getBishopMoves_CaptureOnly1() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
         //when
         Bishop testedPiece = new Bishop(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -63,7 +63,7 @@ public class BishopTest {
         board.addPiece(tmpPiece);
         tmpPiece = new Pawn(E5,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        ChessPosition position = new ChessPosition((ChessBoard)board);
+        ChessPosition position = new ChessPosition(board);
         Set<ChessMove> bishopMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> bishopMoveCoordinate = bishopMoves.stream().map(ChessMove::to).toList();
         List<ChessMoveTags> movesTags = bishopMoves.stream().flatMap(move -> move.getTags().stream()).toList();
@@ -76,7 +76,7 @@ public class BishopTest {
     @Test
     public void getBishopMoves_CaptureOnly2() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
         //when
         Bishop testedPiece = new Bishop(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -88,7 +88,7 @@ public class BishopTest {
         board.addPiece(tmpPiece);
         tmpPiece = new Pawn(E5,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        ChessPosition position = new ChessPosition((ChessBoard)board);
+        ChessPosition position = new ChessPosition(board);
         Set<ChessMove> bishopMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> bishopMoveCoordinate = bishopMoves.stream().map(ChessMove::to).toList();
         List<ChessMoveTags> movesTags = bishopMoves.stream().flatMap(move -> move.getTags().stream()).toList();
@@ -103,7 +103,7 @@ public class BishopTest {
     @Test
     public void getBishopMoves_MixedMoves() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
         //when
         Bishop testedPiece = new Bishop(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -115,7 +115,7 @@ public class BishopTest {
         board.addPiece(tmpPiece);
         tmpPiece = new King(F6,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        ChessPosition position = new ChessPosition((ChessBoard)board);
+        ChessPosition position = new ChessPosition(board);
         Set<ChessMove> bishopMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> bishopMoveCoordinate = bishopMoves.stream().map(ChessMove::to).toList();
         List<ChessMoveTags> movesTags = bishopMoves.stream().flatMap(move -> move.getTags().stream()).toList();

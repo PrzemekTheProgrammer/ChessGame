@@ -88,12 +88,6 @@ public class ChessGame implements Game {
         moveHistory.add(move);
     }
 
-    public void removeLastMoveFromHistory() {
-        if (!moveHistory.isEmpty()) {
-            moveHistory.remove(moveHistory.size() - 1);
-        }
-    }
-
     private void validateTurn(Player player) {
         if (actualPlayer != colorOf(player)) {
             throw new MoveNotAvailableForPlayerException();
