@@ -1,14 +1,15 @@
-package pszerszenowicz.games.chess.board;
+package pszerszenowicz.games.chess.position;
 
-import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.domain.ports.game.Move;
-import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.piece.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ChessBoard implements Board {
 
@@ -118,18 +119,6 @@ public class ChessBoard implements Board {
         pieceCoordinate.put(piece.getPieceCoordinate(), piece);
     }
 
-    @Override
-    public Set<ChessMove> availableMoves(PieceColor color) {
-        Set<ChessMove> ret = new HashSet<>();
-        List<Piece> pieces = pieces().stream().filter((piece) -> piece.getColor() == color).toList();
-        for (Piece piece : pieces) {
-            for (Move m : piece.getMoves(this)) {
-                ret.add((ChessMove) m);
-            }
-        }
-        return ret;
-    }
-    
     @Override
     public void setBoard() {
         PieceCoordinate tmp;

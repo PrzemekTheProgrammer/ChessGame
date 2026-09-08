@@ -33,9 +33,6 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private UserController userController;
-
     @MockitoBean
     private UserService userService;
 
@@ -47,7 +44,7 @@ class UserControllerTest {
 
         when(userService.login(Mockito.any())).thenReturn(resp);
 
-        mockMvc.perform(post("/player/login")
+        mockMvc.perform(post("/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new LoginRequest("user1", "pass123"))))
                 .andExpect(status().isOk())
@@ -56,17 +53,15 @@ class UserControllerTest {
 
     @Test
     void register_shouldReturnAuthResponse() throws Exception {
-
         RegisterCommand req = new RegisterCommand("user1", "pass123");
         AuthResult resp = new AuthResult("fake-jwt-token");
 
         when(userService.register(req)).thenReturn(resp);
 
-        mockMvc.perform(post("/player/register")
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(req)))
+        mockMvc.perform(post("/user/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("fake-jwt-token"));
     }
-
 }

@@ -4,28 +4,25 @@ import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
-import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.games.chess.board.ChessBoard;
+import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
-import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.games.chess.piece.*;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static pszerszenowicz.games.chess.board.ChessBoard.*;
+import static pszerszenowicz.games.chess.position.ChessBoard.*;
 
 public class ChessRulesTest {
 
     @Test
     public void getLegalMovesTest_KingChecked01() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
         Piece tmpPiece = new Rook(A1, PieceColor.WHITE);
@@ -35,7 +32,7 @@ public class ChessRulesTest {
         tmpPiece = new Rook(E6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
+        Set<ChessMove> avaibleMoves = position.legalMoves();
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -54,10 +51,8 @@ public class ChessRulesTest {
     @Test
     public void getLegalMovesTest_KingChecked02() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
         Rook testedPiece2 = new Rook(H3, PieceColor.WHITE);
@@ -67,7 +62,7 @@ public class ChessRulesTest {
         tmpPiece = new Rook(E6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
+        Set<ChessMove> avaibleMoves = position.legalMoves();
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -88,19 +83,15 @@ public class ChessRulesTest {
     @Test
     public void getLegalMovesTest_EnPassant01() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         Pawn testedPiece = new Pawn(F5, PieceColor.WHITE);
         board.addPiece(testedPiece);
         Piece tmpPiece = new Pawn(E5, PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        ChessMove move = new ChessMove(tmpPiece,E5);
-        move.addTag(ChessMoveTags.Charge);
-        history.add(move);
+        position.setEnPassantSquare(E6);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
+        Set<ChessMove> avaibleMoves = position.legalMoves();
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -118,16 +109,14 @@ public class ChessRulesTest {
     @Test
     public void getLegalMovesTest_EnPassantNotAvailable01() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         Pawn testedPiece = new Pawn(F5, PieceColor.WHITE);
         board.addPiece(testedPiece);
         Piece tmpPiece = new Pawn(E5, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
+        Set<ChessMove> avaibleMoves = position.legalMoves();
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -150,10 +139,8 @@ public class ChessRulesTest {
         Roszada na G1 - niedostępna
         */
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King testedPiece = new King(E1, PieceColor.WHITE);
         board.addPiece(testedPiece);
         Rook testedPiece2 = new Rook(H1, PieceColor.WHITE);
@@ -163,7 +150,7 @@ public class ChessRulesTest {
         Piece tmpPiece = new Rook(F6, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
+        Set<ChessMove> avaibleMoves = position.legalMoves();
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -204,10 +191,8 @@ public class ChessRulesTest {
     @Test
     public void getLegalMovesTest_FigurePinned01() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King testedPiece = new King(H3, PieceColor.WHITE);
         board.addPiece(testedPiece);
         Queen testedPiece2 = new Queen(G4, PieceColor.WHITE);
@@ -215,7 +200,7 @@ public class ChessRulesTest {
         Bishop tmpPiece = new Bishop(D7, PieceColor.BLACK);
         board.addPiece(tmpPiece);
         //when
-        Set<ChessMove> avaibleMoves = chessRules.legalMoves(board, PieceColor.WHITE, context);
+        Set<ChessMove> avaibleMoves = position.legalMoves();
         Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
                 .collect(Collectors
                         .groupingBy(
@@ -238,54 +223,38 @@ public class ChessRulesTest {
     @Test
     void getGameStatus_Ongoing() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King piece1 = new King(H3, PieceColor.WHITE);
         board.addPiece(piece1);
         Queen piece2 = new Queen(G4, PieceColor.BLACK);
         board.addPiece(piece2);
         //when
-        ChessGameStatus status = (ChessGameStatus) chessRules.evaluateGameState(
-                chessRules.legalMoves(board, PieceColor.WHITE,context),
-                board,
-                PieceColor.WHITE,
-                history
-        );
+        GameStatus status = position.evaluateGameState();
         //then
-        assertEquals(ChessGameStatus.ONGOING, status);
+        assertEquals(GameStatus.ONGOING, status);
     }
 
     @Test
     void getGameStatus_Stalemate() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King piece1 = new King(A1, PieceColor.WHITE);
         board.addPiece(piece1);
         Queen piece2 = new Queen(B3, PieceColor.BLACK);
         board.addPiece(piece2);
         //when
-        ChessGameStatus status = (ChessGameStatus) chessRules.evaluateGameState(
-                chessRules.legalMoves(board, PieceColor.WHITE,context),
-                board,
-                PieceColor.WHITE,
-                history
-        );
+        GameStatus status = position.evaluateGameState();
         //then
-        assertEquals(ChessGameStatus.STALEMATE, status);
+        assertEquals(GameStatus.STALEMATE, status);
     }
 
     @Test
     void getGameStatus_Black_Win() {
         //given
-        ChessRules chessRules = new ChessRules();
-        Board board = new ChessBoard();
-        List<ChessMove> history = new ArrayList<>();
-        ChessContext context = new ChessContext(history);
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         King piece1 = new King(A1, PieceColor.WHITE);
         board.addPiece(piece1);
         Queen piece2 = new Queen(B2, PieceColor.BLACK);
@@ -293,14 +262,9 @@ public class ChessRulesTest {
         Queen piece3 = new Queen(A2, PieceColor.BLACK);
         board.addPiece(piece3);
         //when
-        ChessGameStatus status = (ChessGameStatus) chessRules.evaluateGameState(
-                chessRules.legalMoves(board, PieceColor.WHITE,context),
-                board,
-                PieceColor.WHITE,
-                history
-        );
+        GameStatus status = position.evaluateGameState();
         //then
-        assertEquals(ChessGameStatus.BLACK_WIN, status);
+        assertEquals(GameStatus.BLACK_WIN, status);
     }
 
 }

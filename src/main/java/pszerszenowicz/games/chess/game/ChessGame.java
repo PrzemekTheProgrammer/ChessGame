@@ -8,8 +8,9 @@ import pszerszenowicz.domain.exception.PlayerNotInGameException;
 import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Player;
-import pszerszenowicz.games.chess.board.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.position.ChessBoard;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,9 @@ public class ChessGame implements Game {
     private final List<ChessMove> moveHistory = new ArrayList<>();
     private Set<ChessMove> legalMoves;
     private PieceColor actualPlayer;
-    private final ChessRules chessRules = new ChessRules();
-    private final ChessContext chessContext = new ChessContext(moveHistory);
-    private ChessGameStatus gameStatus;
+    private ChessPosition position;
+//    private final ChessRules chessRules = new ChessRules();
+    private GameStatus gameStatus;
     private final Player white;
     private final Player black;
     private final GameId gameId;
@@ -33,12 +34,13 @@ public class ChessGame implements Game {
         this.white = Objects.requireNonNull(white);
         this.black = Objects.requireNonNull(black);
         this.gameId = GameId.random();
+        initGame();
     }
 
     @Override
     public void makeMove(Move move, Player player) {
         validateTurn(player);
-        if (gameStatus == ChessGameStatus.ONGOING) {
+        if (gameStatus == GameStatus.ONGOING) {
             if (move instanceof ChessMove) {
                 validateMove((ChessMove) move);
                 executeMove((ChessMove) move);
@@ -50,9 +52,9 @@ public class ChessGame implements Game {
     @Override
     public void initGame() {
         board.setBoard();
-        actualPlayer = PieceColor.WHITE;
-        gameStatus = ChessGameStatus.ONGOING;
-        legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
+        gameStatus = GameStatus.ONGOING;
+        position = new ChessPosition(board);
+        legalMoves = position.legalMoves();
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ChessGame implements Game {
     }
 
     private void executeMove(ChessMove move) {
-        move.apply(board);
+        move.apply(position);
         addToHistory(move);
     }
 
@@ -78,8 +80,8 @@ public class ChessGame implements Game {
 
     private void postMoveUpdates() {
         actualPlayer = actualPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
-        legalMoves = chessRules.legalMoves(board, actualPlayer, chessContext);
-        gameStatus = (ChessGameStatus) chessRules.evaluateGameState(legalMoves, board, actualPlayer, moveHistory);
+        legalMoves = position.legalMoves();
+        gameStatus = position.evaluateGameState();
     }
 
     public void addToHistory(ChessMove move) {

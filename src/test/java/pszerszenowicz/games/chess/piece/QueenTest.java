@@ -5,15 +5,16 @@ import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.games.chess.board.ChessBoard;
+import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 
 import java.util.List;
 import java.util.Set;
 
-import static pszerszenowicz.games.chess.board.ChessBoard.*;
+import static pszerszenowicz.games.chess.position.ChessBoard.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,11 +23,12 @@ public class QueenTest {
     @Test
     public void getQueenMoves_MoveOnly1() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         //when
         Queen testedPiece = new Queen(A2, PieceColor.WHITE);
         board.addPiece(testedPiece);
-        Set<ChessMove> queenMoves = testedPiece.getMoves(board);
+        Set<ChessMove> queenMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> queenMoveCoordinate = queenMoves.stream().map(ChessMove::to).toList();
         //then
         assertEquals(21,queenMoves.size());
@@ -40,7 +42,8 @@ public class QueenTest {
     @Test
     public void getQueenMoves_MoveOnly2() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         //when
         Queen testedPiece = new Queen(F5,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -48,7 +51,7 @@ public class QueenTest {
         board.addPiece(tmpPiece);
         tmpPiece = new Pawn(E5,PieceColor.WHITE);
         board.addPiece(tmpPiece);
-        Set<ChessMove> queenMoves = testedPiece.getMoves(board);
+        Set<ChessMove> queenMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> queenMoveCoordinate = queenMoves.stream().map(ChessMove::to).toList();
         //then
         assertEquals(18,queenMoves.size());
@@ -64,7 +67,8 @@ public class QueenTest {
     @Test
     public void getQueenMoves_CaptureOnly1() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         //when
         Queen testedPiece = new Queen(D4,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -84,7 +88,7 @@ public class QueenTest {
         board.addPiece(tmpPiece);
         tmpPiece = new Pawn(E5,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        Set<ChessMove> rookMoves = testedPiece.getMoves(board);
+        Set<ChessMove> rookMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
         List<ChessMoveTags> movesTags = rookMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
@@ -99,7 +103,8 @@ public class QueenTest {
     @Test
     public void getQueenMoves_CaptureOnly2() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         //when
         Queen testedPiece = new Queen(A1,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -109,7 +114,7 @@ public class QueenTest {
         board.addPiece(tmpPiece);
         tmpPiece = new Pawn(B2,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        Set<ChessMove> rookMoves = testedPiece.getMoves(board);
+        Set<ChessMove> rookMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
         List<ChessMoveTags> movesTags = rookMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then
@@ -122,7 +127,8 @@ public class QueenTest {
     @Test
     public void getQueenMoves_MixedMoves() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
+        ChessPosition position = new ChessPosition(board);
         //when
         Queen testedPiece = new Queen(H8,PieceColor.WHITE);
         board.addPiece(testedPiece);
@@ -132,7 +138,7 @@ public class QueenTest {
         board.addPiece(tmpPiece);
         tmpPiece = new Pawn(G7,PieceColor.BLACK);
         board.addPiece(tmpPiece);
-        Set<ChessMove> rookMoves = testedPiece.getMoves(board);
+        Set<ChessMove> rookMoves = testedPiece.getMoves(position);
         List<PieceCoordinate> rookMoveCoordinate = rookMoves.stream().map(ChessMove::to).toList();
         List<ChessMoveTags> movesTags = rookMoves.stream().flatMap(move -> move.getTags().stream()).toList();
         //then

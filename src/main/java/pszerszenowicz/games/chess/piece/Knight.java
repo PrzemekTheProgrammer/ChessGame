@@ -1,16 +1,17 @@
 package pszerszenowicz.games.chess.piece;
 
-import pszerszenowicz.domain.core.piece.PieceColor;
-import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.games.chess.move.ChessMoveTags;
-import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.domain.core.piece.Piece;
+import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.position.ChessBoard;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static pszerszenowicz.games.chess.board.ChessBoard.getCoordinate;
+import static pszerszenowicz.games.chess.position.ChessBoard.getCoordinate;
 
 public class Knight extends Piece {
     public Knight(PieceCoordinate pieceCoordinate, PieceColor color) {
@@ -19,7 +20,8 @@ public class Knight extends Piece {
 
 
     @Override
-    public Set<ChessMove> getMoves(Board board) {
+    public Set<ChessMove> getMoves(ChessPosition position) {
+        ChessBoard board = position.getChessBoard();
         Set<ChessMove> possibleMoves = new HashSet<>();
         int[] horizontalDir = {-1, -2, -2, -1, 1, 2, 2, 1};
         int[] verticalDir = {2, 1, -1, -2, -2, -1, 1, 2};

@@ -2,6 +2,8 @@ package pszerszenowicz.domain.core.piece;
 
 import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.domain.ports.game.Move;
+import pszerszenowicz.domain.ports.game.Position;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.Set;
 
@@ -27,6 +29,6 @@ public abstract class Piece {
         return color;
     }
 
-    public abstract Set<? extends Move> getMoves(Board board);
+    public abstract Set<? extends Move> getMoves(ChessPosition position);
 
 }

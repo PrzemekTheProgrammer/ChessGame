@@ -1,4 +1,4 @@
-package pszerszenowicz.games.chess.board;
+package pszerszenowicz.games.chess.position;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.PieceColor;
@@ -13,7 +13,7 @@ public class ChessBoardTests {
     @Test
     public void boardIsSet() {
         //given
-        Board board = new ChessBoard();
+        ChessBoard board = new ChessBoard();
         //when
         board.setBoard();
 

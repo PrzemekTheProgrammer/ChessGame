@@ -1,48 +1,41 @@
 package pszerszenowicz.games.chess.piece;
 
 import pszerszenowicz.domain.core.piece.PieceColor;
-import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.games.chess.position.CastlingRights;
+import pszerszenowicz.games.chess.position.ChessBoard;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static pszerszenowicz.games.chess.board.ChessBoard.getCoordinate;
+import static pszerszenowicz.games.chess.position.ChessBoard.*;
 
 public class King extends Piece {
-    private Boolean canCastle = true;
-
     public King(PieceCoordinate pieceCoordinate, PieceColor color) {
         super(pieceCoordinate, color);
     }
 
-    public void loseCastleRight() {
-        canCastle = false;
-    }
-
-    public void applyCastleRight() {
-        canCastle = true;
-    }
-
     @Override
-    public Set<ChessMove> getMoves(Board board) {
+    public Set<ChessMove> getMoves(ChessPosition position) {
+        ChessBoard board = position.getChessBoard();
         Set<ChessMove> possibleMoves = new HashSet<>();
         PieceCoordinate from = this.getPieceCoordinate();
-        int[] horizontalDir = {-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] columnDir = {-1, -1, -1, 0, 1, 1, 1, 0};
         int[] verticalDir = {1, 0, -1, -1, -1, 0, 1, 1};
         for (int dir = 0; dir < 8; dir++) {
-            int newHorizontalValue = from.getColumn() + horizontalDir[dir];
-            int newVerticalValue = from.getRow() + verticalDir[dir];
-            if (newHorizontalValue < 1 || newHorizontalValue > 8
-                    || newVerticalValue < 1 || newVerticalValue > 8) {
+            int newColumnValue = from.getColumn() + columnDir[dir];
+            int newRowValue = from.getRow() + verticalDir[dir];
+            if (newColumnValue < 1 || newColumnValue > 8
+                    || newRowValue < 1 || newRowValue > 8) {
                 continue;
             }
             PieceCoordinate newCoord = getCoordinate(
-                    newHorizontalValue,
-                    newVerticalValue);
+                    newColumnValue,
+                    newRowValue);
 
             Piece existingPiece = board.getPiece(newCoord);
             if (existingPiece == null) {
@@ -54,7 +47,7 @@ public class King extends Piece {
                         to = new ChessMove(this, newCoord);
                         to.addTag(ChessMoveTags.AttacksKing);
                     } else {
-                        to = new ChessMove(this, newCoord,existingPiece);
+                        to = new ChessMove(this, newCoord, existingPiece);
                         to.addTag(ChessMoveTags.Capture);
                     }
                     possibleMoves.add(to); // bicie
@@ -62,43 +55,78 @@ public class King extends Piece {
             }
         }
 
-        if (canCastle) {
-            horizontalDir = new int[]{-1, 1};
-            castleDirection:
-            for (int dir = 0; dir < 2; dir++) {
-                int step = 1;
-                while (true) {
-                    int newHorizontalValue = from.getColumn() + horizontalDir[dir] * step;
-                    if (newHorizontalValue < 1 || newHorizontalValue > 8) {
+        columnDir = new int[]{-1, 1};
+        for (int dir = 0; dir < 2; dir++) {
+            if (!canCastle(position.getCastlingRights(), columnDir[dir]))
+                continue;
+            int step = 1;
+            int newColumnValue = from.getColumn() + columnDir[dir] * step;
+            do {
+                PieceCoordinate newCoord = getCoordinate(
+                        newColumnValue,
+                        from.getRow());
+                Piece existingPiece = board.getPiece(newCoord);
+                if (newColumnValue != 1 && newColumnValue != 8) {
+                    if (existingPiece == null) {
+                        step++;
+                        newColumnValue = from.getColumn() + columnDir[dir] * step;
+                        continue;
+                    } else {
                         break;
                     }
-                    PieceCoordinate newCoord = getCoordinate(
-                            newHorizontalValue,
-                            from.getRow());
-                    Piece existingPiece = board.getPiece(newCoord);
-                    if (newHorizontalValue != 1 && newHorizontalValue != 8) {
-                        if (existingPiece == null) {
-                            step++;
-                            continue;
-                        } else {
-                            break;
+                }
+                if (existingPiece instanceof Rook rook){
+                    if ( existingPiece.getPieceCoordinate().getColumn() == 1) {
+                        if (getColor() == PieceColor.WHITE) {
+                            if (position.getCastlingRights().hasRight(CastlingRights.WHITE_QUEEN_SIDE)) {
+                                possibleMoves.add(castleMove(C1,rook));
+                            }
+                        }
+                        else {
+                            if(position.getCastlingRights().hasRight(CastlingRights.BLACK_QUEEN_SIDE)) {
+                                possibleMoves.add(castleMove(C8,rook));
+                            }
                         }
                     }
-                    if (existingPiece instanceof Rook
-                            && ((Rook) existingPiece).canCastle()) {
-                        int newHorizontalNotationIntValue = from.getColumn() + horizontalDir[dir] * 2;
-                        PieceCoordinate tmp = getCoordinate(
-                                newHorizontalNotationIntValue,
-                                from.getRow()
-                        );
-                        ChessMove to = new ChessMove(this, tmp,existingPiece);
-                        to.addTag(ChessMoveTags.Castle);
-                        possibleMoves.add(to);
+                    else if (existingPiece.getPieceCoordinate().getColumn() == 8) {
+                        if (getColor() == PieceColor.WHITE) {
+                            if (position.getCastlingRights().hasRight(CastlingRights.WHITE_KING_SIDE)) {
+                                possibleMoves.add(castleMove(G1,rook));
+                            }
+                        }
+                        else {
+                            if(position.getCastlingRights().hasRight(CastlingRights.BLACK_KING_SIDE)) {
+                                possibleMoves.add(castleMove(G8,rook));
+                            }
+                        }
                     }
-                    continue castleDirection;
                 }
-            }
+                break;
+            } while (newColumnValue <= 8 && newColumnValue >= 1);
+
         }
         return possibleMoves;
+    }
+
+    ChessMove castleMove(PieceCoordinate coordinate, Rook rook) {
+        ChessMove ret = new ChessMove(this,coordinate,rook);
+        ret.addTag(ChessMoveTags.Castle);
+        return ret;
+    }
+
+    private boolean canCastle(CastlingRights castlingRights, int dir) {
+        if (this.getColor() == PieceColor.WHITE) {
+            if (dir < 0) {
+                return castlingRights.hasRight(CastlingRights.WHITE_QUEEN_SIDE);
+            } else {
+                return castlingRights.hasRight(CastlingRights.WHITE_KING_SIDE);
+            }
+        } else {
+            if (dir < 0) {
+                return castlingRights.hasRight(CastlingRights.BLACK_QUEEN_SIDE);
+            } else {
+                return castlingRights.hasRight(CastlingRights.BLACK_KING_SIDE);
+            }
+        }
     }
 }

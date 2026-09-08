@@ -9,7 +9,7 @@ import pszerszenowicz.domain.exception.UsernameAlreadyExistsException;
 import pszerszenowicz.infrastructure.web.error.dto.ApiError;
 
 @RestControllerAdvice
-public class GlobalExcecptionHandler {
+public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiError> handleInvalidCred(InvalidCredentialsException e) {
         return ResponseEntity
@@ -28,6 +28,6 @@ public class GlobalExcecptionHandler {
     public ResponseEntity<ApiError> handleOther(Exception e) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiError(500, "Unexpected error"));
+                .body(new ApiError(500, "Unexpected error" + e.getMessage()));
     }
 }

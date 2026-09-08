@@ -13,7 +13,7 @@ import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
 import pszerszenowicz.infrastructure.web.auth.dto.RegisterRequest;
 
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;

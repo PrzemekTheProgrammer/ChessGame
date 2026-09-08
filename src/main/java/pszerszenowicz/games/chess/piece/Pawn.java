@@ -1,19 +1,19 @@
 package pszerszenowicz.games.chess.piece;
 
-import pszerszenowicz.domain.ports.game.Board;
-import pszerszenowicz.games.chess.board.ChessBoard;
-import pszerszenowicz.games.chess.move.ChessMoveTags;
-import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
+import pszerszenowicz.games.chess.position.ChessBoard;
+import pszerszenowicz.games.chess.position.ChessPosition;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pszerszenowicz.games.chess.board.ChessBoard.getCoordinate;
+import static pszerszenowicz.games.chess.position.ChessBoard.getCoordinate;
 
 public class Pawn extends Piece {
 
@@ -22,44 +22,44 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Set<ChessMove> getMoves(Board board) {
+    public Set<ChessMove> getMoves(ChessPosition position) {
+        ChessBoard board = position.getChessBoard();
         Set<ChessMove> possibleMoves = new HashSet<>();
-        if (board instanceof ChessBoard) {
-            PieceColor color = getColor();
-            int verticalDir = color == PieceColor.WHITE ? 1 : -1;
-            int horizontalValue = this.getPieceCoordinate().getColumn();
-            int verticalValue = this.getPieceCoordinate().getRow();
-            final int promotionRow = color == PieceColor.WHITE ? 8 : 1;
+        PieceColor color = getColor();
+        int rowDir = color == PieceColor.WHITE ? 1 : -1;
+        int columnValue = this.getPieceCoordinate().getColumn();
+        int rowValue = this.getPieceCoordinate().getRow();
+        final int promotionRow = color == PieceColor.WHITE ? 8 : 1;
 
-            // Ruch do przodu
+        // Ruch do przodu
+        possibleMoves.add(
+                moveForward(columnValue, rowValue, rowDir, board)
+        );
+
+        // Bicie
+        possibleMoves.addAll(
+                capture(columnValue, rowValue, rowDir, board)
+        );
+
+        //Szarża
+        possibleMoves.add(
+                charge(columnValue, rowValue, rowDir, board)
+        );
+
+        //Bicie w locie
+        PieceCoordinate enPassantSquare = position.getEnPassantSquare();
+        if (enPassantSquare != null) {
             possibleMoves.add(
-                    moveForward(horizontalValue, verticalValue, verticalDir, (ChessBoard) board)
+                    enPassant(columnValue, rowValue, rowDir, board, enPassantSquare)
             );
-
-            // Bicie
-            possibleMoves.addAll(
-                    capture(horizontalValue, verticalValue, verticalDir, (ChessBoard) board)
-            );
-
-            //Szarża
-            possibleMoves.add(
-                    charge(horizontalValue, verticalValue, verticalDir, (ChessBoard) board)
-            );
-
-            //Bicie w locie
-            possibleMoves.addAll(
-                    enPassant(horizontalValue, verticalValue, verticalDir, (ChessBoard) board, color)
-            );
-
-            possibleMoves.remove(null);
-            possibleMoves = possibleMoves.stream().flatMap(move ->
-                    move.to().getRow() == promotionRow
-                            ? promotionMoves(move)
-                            : Stream.of(move)
-            ).collect(Collectors.toSet());
-
         }
 
+        possibleMoves.remove(null);
+        possibleMoves = possibleMoves.stream().flatMap(move ->
+                move.to().getRow() == promotionRow
+                        ? promotionMoves(move)
+                        : Stream.of(move)
+        ).collect(Collectors.toSet());
         return possibleMoves;
     }
 
@@ -72,8 +72,8 @@ public class Pawn extends Piece {
         );
     }
 
-    private ChessMove moveForward(int horVal, int vertVal, int vertDir, ChessBoard board) {
-        PieceCoordinate newCoord = getCoordinate(horVal, vertVal + vertDir);
+    private ChessMove moveForward(int columnValue, int rowValue, int rowDir, ChessBoard board) {
+        PieceCoordinate newCoord = getCoordinate(columnValue, rowValue + rowDir);
         Piece existingPiece = board.getPiece(newCoord);
         if (existingPiece == null) {
             return new ChessMove(this, newCoord);
@@ -81,13 +81,13 @@ public class Pawn extends Piece {
         return null;
     }
 
-    private Set<ChessMove> capture(int horVal, int vertVal, int vertDir, ChessBoard board) {
+    private Set<ChessMove> capture(int columnValue, int rowValue, int rowDir, ChessBoard board) {
         Set<ChessMove> ret = new HashSet<>();
 
         int[] horizontalDir = {-1, 1};
         for (int dir = 0; dir < 2; dir++) {
-            int newHorVal = horVal + horizontalDir[dir];
-            int newVertVal = vertVal + vertDir;
+            int newHorVal = columnValue + horizontalDir[dir];
+            int newVertVal = rowValue + rowDir;
             if (newHorVal < 1 || newHorVal > 8)
                 continue;
             PieceCoordinate newCoord = getCoordinate(newHorVal, newVertVal);
@@ -107,22 +107,22 @@ public class Pawn extends Piece {
         return ret;
     }
 
-    private ChessMove charge(int horVal, int vertVal, int vertDir, ChessBoard board) {
+    private ChessMove charge(int columnValue, int rowValue, int rowDir, ChessBoard board) {
         boolean charge = false;
         if (this.getColor() == PieceColor.WHITE) {
-            if (vertVal == 2) {
+            if (rowValue == 2) {
                 charge = true;
             }
         } else {
-            if (vertVal == 7) {
+            if (rowValue == 7) {
                 charge = true;
             }
         }
         if (charge) {
-            PieceCoordinate newCoord = getCoordinate(horVal, vertVal + vertDir);
+            PieceCoordinate newCoord = getCoordinate(columnValue, rowValue + rowDir);
             Piece existingPiece = board.getPiece(newCoord);
             if (existingPiece == null) {
-                newCoord = getCoordinate(horVal, vertVal + vertDir * 2);
+                newCoord = getCoordinate(columnValue, rowValue + rowDir * 2);
                 existingPiece = board.getPiece(newCoord);
                 if (existingPiece == null) {
                     ChessMove move = new ChessMove(this, newCoord);
@@ -134,37 +134,20 @@ public class Pawn extends Piece {
         return null;
     }
 
-    private Set<ChessMove> enPassant(int horVal, int vertVal, int vertDir, ChessBoard board, PieceColor color) {
-        boolean enPassant = false;
-        int[] horizontalDir = {-1, 1};
-        Set<ChessMove> ret = new HashSet<>();
-
-        if (color == PieceColor.WHITE
-                && vertVal == 5) {
-            enPassant = true;
-        } else if (color == PieceColor.BLACK
-                && vertVal == 4) {
-            enPassant = true;
-        }
-        if (enPassant) {
-            for (int i : horizontalDir) {
-                int newHorVal = horVal + i;
-                if (newHorVal < 1 || newHorVal > 8)
-                    continue;
-                PieceCoordinate newCoord = getCoordinate(newHorVal, vertVal);
-                Piece existingPiece = board.getPiece(newCoord);
-                if (existingPiece != null
-                        && existingPiece.getColor() != this.getColor()
-                        && existingPiece instanceof Pawn) {
-                    newCoord = getCoordinate(horVal + i, vertVal + vertDir
-                    );
-                    ChessMove move = new ChessMove(this, newCoord, existingPiece);
-                    move.addTag(ChessMoveTags.EnPassant);
-                    move.addTag(ChessMoveTags.Capture);
-                    ret.add(move);
-                }
+    private ChessMove enPassant(int columnValue, int rowValue, int rowDir, ChessBoard board, PieceCoordinate enPassantSquare) {
+        if (Math.abs(columnValue - enPassantSquare.getColumn()) - 1 == 0 &&
+                rowValue + rowDir == enPassantSquare.getRow()) {
+            Piece capturedPiece;
+            if (this.getColor() == PieceColor.WHITE) {
+                capturedPiece = board.getPiece(ChessBoard.getCoordinate(enPassantSquare.getColumn(),5));
+            } else {
+                capturedPiece = board.getPiece(ChessBoard.getCoordinate(enPassantSquare.getColumn(),4));
             }
+            ChessMove move = new ChessMove(this, enPassantSquare, capturedPiece);
+            move.addTag(ChessMoveTags.EnPassant);
+            move.addTag(ChessMoveTags.Capture);
+            return move;
         }
-        return ret;
+        return null;
     }
 }
