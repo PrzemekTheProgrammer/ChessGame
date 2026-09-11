@@ -50,7 +50,7 @@ class InvitationControllerTest {
         InvitationId id = InvitationId.random();
 
         when(currentUser.get()).thenReturn(user);
-        when(service.invite(any(), any(), any(), any()))
+        when(service.invite(any(), any(), any()))
                 .thenReturn(id);
 
         mockMvc.perform(post("/api/invitations")

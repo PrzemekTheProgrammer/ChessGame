@@ -31,7 +31,6 @@ class InvitationController {
         InvitationId id = service.invite(
                 currentUser.get(),
                 UserId.of(req.toUserId()),
-                req.gameType(),
                 req.colorChoice()
         );
 

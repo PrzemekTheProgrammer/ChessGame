@@ -29,4 +29,5 @@ public abstract class Piece {
 
     public abstract Set<? extends Move> getMoves(ChessPosition position);
 
+    public abstract int getValue();
 }

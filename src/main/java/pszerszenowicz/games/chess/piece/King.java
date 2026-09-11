@@ -108,6 +108,11 @@ public class King extends Piece {
         return possibleMoves;
     }
 
+    @Override
+    public int getValue() {
+        return 20000;
+    }
+
     ChessMove castleMove(PieceCoordinate coordinate, Rook rook) {
         ChessMove ret = new ChessMove(this,coordinate,rook);
         ret.addTag(ChessMoveTags.Castle);

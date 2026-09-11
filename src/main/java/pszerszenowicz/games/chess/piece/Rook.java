@@ -58,4 +58,9 @@ public class Rook extends Piece {
         }
         return possibleMoves;
     }
+
+    @Override
+    public int getValue() {
+        return 500;
+    }
 }

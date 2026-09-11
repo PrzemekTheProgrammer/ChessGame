@@ -12,7 +12,6 @@ class InvitationMapper {
         return GameInvitation.restore(InvitationId.of(inv.getUuid()),
                 UserId.of(inv.getFrom()),
                 UserId.of(inv.getTo()),
-                inv.getGameType(),
                 inv.getStatus(),
                 inv.getColorChoice());
     }
@@ -22,7 +21,6 @@ class InvitationMapper {
         e.setUuid(inv.getId().id());
         e.setFrom(inv.getFrom().uuid());
         e.setTo(inv.getTo().uuid());
-        e.setGameType(inv.getGameType());
         e.setStatus(inv.getStatus());
         e.setColorChoice(inv.getColorChoice());
         return e;

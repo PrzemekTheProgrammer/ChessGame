@@ -63,6 +63,11 @@ public class Pawn extends Piece {
         return possibleMoves;
     }
 
+    @Override
+    public int getValue() {
+        return 100;
+    }
+
     private Stream<ChessMove> promotionMoves(ChessMove move) {
         return Stream.of(
                 new ChessMove(move, ChessMoveTags.PROMOTE_BISHOP),

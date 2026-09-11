@@ -10,7 +10,6 @@ import pszerszenowicz.application.invitation.exception.InvitationNotFoundExcepti
 import pszerszenowicz.application.ports.PlayerFactory;
 import pszerszenowicz.application.ports.invitation.InvitationRepository;
 import pszerszenowicz.domain.core.game.GameId;
-import pszerszenowicz.domain.core.game.GameType;
 import pszerszenowicz.domain.core.user.UserId;
 import pszerszenowicz.domain.ports.game.Player;
 
@@ -43,7 +42,6 @@ class InvitationServiceTest {
         InvitationId id = service.invite(
                 from,
                 to,
-                GameType.CHESS,
                 ColorChoice.RANDOM
         );
 
@@ -58,7 +56,6 @@ class InvitationServiceTest {
                 id,
                 from,
                 to,
-                GameType.CHESS,
                 InvitationStatus.PENDING,
                 ColorChoice.INVITER_WHITE
         );
@@ -68,7 +65,7 @@ class InvitationServiceTest {
                 .thenReturn(mock(Player.class));
 
         GameId gameId = GameId.random();
-        when(gameService.createGame(any(), any(), any()))
+        when(gameService.createGame(any(), any()))
                 .thenReturn(gameId);
 
         GameId result = service.accept(id, to);
@@ -76,7 +73,7 @@ class InvitationServiceTest {
         assertEquals(gameId, result);
 
         verify(repo).delete(id);
-        verify(gameService).createGame(any(), any(), any());
+        verify(gameService).createGame(any(), any());
     }
 
     @Test
@@ -86,7 +83,6 @@ class InvitationServiceTest {
                 id,
                 from,
                 to,
-                GameType.CHESS,
                 InvitationStatus.PENDING,
                 ColorChoice.RANDOM
         );

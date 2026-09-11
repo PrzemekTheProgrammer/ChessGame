@@ -3,7 +3,6 @@ package pszerszenowicz.infrastructure.persistence.invitation;
 import jakarta.persistence.*;
 import pszerszenowicz.application.invitation.ColorChoice;
 import pszerszenowicz.application.invitation.InvitationStatus;
-import pszerszenowicz.domain.core.game.GameType;
 
 import java.util.UUID;
 
@@ -19,9 +18,6 @@ class InvitationEntity {
     private  UUID to;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private  GameType gameType;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private InvitationStatus status;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -29,11 +25,10 @@ class InvitationEntity {
 
     protected InvitationEntity(){}
 
-    protected InvitationEntity(UUID uuid, UUID from, UUID to, GameType gameType, InvitationStatus status, ColorChoice colorChoice) {
+    protected InvitationEntity(UUID uuid, UUID from, UUID to, InvitationStatus status, ColorChoice colorChoice) {
         this.uuid = uuid;
         this.from = from;
         this.to = to;
-        this.gameType = gameType;
         this.status = status;
         this.colorChoice = colorChoice;
     }
@@ -42,14 +37,12 @@ class InvitationEntity {
             UUID id,
             UUID from,
             UUID to,
-            GameType type,
             ColorChoice color
     ) {
         return new InvitationEntity(
                 id,
                 from,
                 to,
-                type,
                 InvitationStatus.PENDING,
                 color
         );
@@ -77,14 +70,6 @@ class InvitationEntity {
 
     public void setTo(UUID to) {
         this.to = to;
-    }
-
-    public GameType getGameType() {
-        return gameType;
-    }
-
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
     }
 
     public InvitationStatus getStatus() {

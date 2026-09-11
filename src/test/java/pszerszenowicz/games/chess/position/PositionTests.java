@@ -1,22 +1,23 @@
-package pszerszenowicz.games.chess.game;
+package pszerszenowicz.games.chess.position;
 
 import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
-import pszerszenowicz.games.chess.position.ChessBoard;
+import pszerszenowicz.games.chess.game.GameStatus;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.piece.*;
-import pszerszenowicz.games.chess.position.ChessPosition;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pszerszenowicz.games.chess.position.ChessBoard.*;
+import static pszerszenowicz.games.chess.position.ChessBoard.A2;
 
-public class ChessRulesTest {
+public class PositionTests {
 
     @Test
     public void getLegalMovesTest_KingChecked01() {

@@ -6,7 +6,6 @@ import pszerszenowicz.application.invitation.exception.InvitationNotFoundExcepti
 import pszerszenowicz.application.ports.PlayerFactory;
 import pszerszenowicz.application.ports.invitation.InvitationRepository;
 import pszerszenowicz.domain.core.game.GameId;
-import pszerszenowicz.domain.core.game.GameType;
 import pszerszenowicz.domain.core.user.UserId;
 
 @Service
@@ -22,8 +21,8 @@ public class InvitationService {
         this.playerFactory = playerFactory;
     }
 
-    public InvitationId invite(UserId from, UserId to, GameType type, ColorChoice colorChoice) {
-        GameInvitation inv = new  GameInvitation(from, to, type, colorChoice);
+    public InvitationId invite(UserId from, UserId to, ColorChoice colorChoice) {
+        GameInvitation inv = new  GameInvitation(from, to, colorChoice);
         repo.save(inv);
         return inv.getId();
     }
@@ -35,7 +34,6 @@ public class InvitationService {
         inv.accept(user);
 
         GameId gameId = gameService.createGame(
-                inv.getGameType(),
                 playerFactory.createHuman(inv.resolveWhiteUser()),
                 playerFactory.createHuman(inv.resolveBlackUser())
         );

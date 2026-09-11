@@ -1,29 +1,25 @@
 package pszerszenowicz.application.invitation;
 
-import pszerszenowicz.domain.core.game.GameType;
 import pszerszenowicz.application.invitation.exception.CannotInviteYourselfException;
 import pszerszenowicz.application.invitation.exception.InvalidInvitationStateException;
 import pszerszenowicz.application.invitation.exception.InvitationNotForThisUserException;
 import pszerszenowicz.domain.core.user.UserId;
 
 import java.util.Random;
-import java.util.UUID;
 
 public class GameInvitation {
     private final InvitationId id;
     private final UserId from;
     private final UserId to;
-    private final GameType gameType;
     private InvitationStatus status;
     private final ColorChoice colorChoice;
 
-    GameInvitation(UserId from, UserId to, GameType gameType, ColorChoice colorChoice) {
+    GameInvitation(UserId from, UserId to, ColorChoice colorChoice) {
         if (from.equals(to)) {
             throw new CannotInviteYourselfException();
         }
         this.from = from;
         this.to = to;
-        this.gameType = gameType;
         this.colorChoice = colorChoice;
         id = InvitationId.random();
         status = InvitationStatus.PENDING;
@@ -32,13 +28,11 @@ public class GameInvitation {
     protected GameInvitation(InvitationId id,
                              UserId from,
                              UserId to,
-                             GameType gameType,
                              InvitationStatus status,
                              ColorChoice colorChoice) {
         this.id = id;
         this.from = from;
         this.to = to;
-        this.gameType = gameType;
         this.status = status;
         this.colorChoice = colorChoice;
     }
@@ -46,10 +40,9 @@ public class GameInvitation {
     public static GameInvitation restore(InvitationId id,
                                          UserId from,
                                          UserId to,
-                                         GameType gameType,
                                          InvitationStatus status,
                                          ColorChoice colorChoice) {
-        return new GameInvitation(id, from, to, gameType, status, colorChoice);
+        return new GameInvitation(id, from, to, status, colorChoice);
     }
 
     public void accept(UserId user) {
@@ -81,10 +74,6 @@ public class GameInvitation {
 
     public UserId getTo() {
         return to;
-    }
-
-    public GameType getGameType() {
-        return gameType;
     }
 
     public InvitationStatus getStatus() {

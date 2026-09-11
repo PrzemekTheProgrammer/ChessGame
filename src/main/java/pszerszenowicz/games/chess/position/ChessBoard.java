@@ -110,9 +110,15 @@ public class ChessBoard implements Board {
         return "" + (char) ('A' + horVal - 1) + verVal;
     }
 
-    private final Map<PieceCoordinate, Piece> pieceCoordinate = new HashMap<>();
+    private final Map<PieceCoordinate, Piece> pieceCoordinate;
 
-    public ChessBoard(){}
+    public ChessBoard() {
+        pieceCoordinate = new HashMap<>();
+    }
+
+    public ChessBoard(ChessBoard chessBoard) {
+        this.pieceCoordinate = new HashMap<>(chessBoard.pieceCoordinate);
+    }
 
     @Override
     public void addPiece(Piece piece) {

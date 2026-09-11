@@ -2,6 +2,7 @@ package pszerszenowicz.games.chess.position;
 
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
+import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Position;
 import pszerszenowicz.games.chess.game.GameStatus;
@@ -41,8 +42,14 @@ public class ChessPosition implements Position {
         this.chessBoard = chessBoard;
     }
 
+    @Override
     public PieceColor getSideToMove() {
         return sideToMove;
+    }
+
+    @Override
+    public Board getBoard() {
+        return chessBoard;
     }
 
     public void oppositeSideToMove() {

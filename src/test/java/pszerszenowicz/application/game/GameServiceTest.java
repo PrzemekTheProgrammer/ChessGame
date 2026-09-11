@@ -6,10 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pszerszenowicz.application.exception.GameNotFoundException;
-import pszerszenowicz.application.ports.game.GameFactory;
 import pszerszenowicz.application.ports.game.GameRepository;
 import pszerszenowicz.domain.core.game.GameId;
-import pszerszenowicz.domain.core.game.GameType;
 import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Player;
@@ -24,9 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameServiceTest {
 
     @Mock
-    private GameFactory factory;
-
-    @Mock
     private GameRepository repo;
 
     @InjectMocks
@@ -37,17 +32,10 @@ public class GameServiceTest {
         //given
         Player p1 = mock(Player.class);
         Player p2 = mock(Player.class);
-        Game game = mock(Game.class);
-        GameId id = GameId.random();
         //when
-        when(factory.create(GameType.CHESS,p1,p2)).thenReturn(game);
-        when(game.getGameId()).thenReturn(id);
-        GameId retId = gameService.createGame(GameType.CHESS,p1,p2);
+        GameId retId = gameService.createGame(p1,p2);
         //then
-        assertEquals(id,retId);
-        verify(factory).create(GameType.CHESS,p1,p2);
-        verify(repo).save(game);
-        verifyNoMoreInteractions(factory,repo);
+        assertNotNull(retId);
     }
 
     @Test

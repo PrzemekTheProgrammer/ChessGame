@@ -8,33 +8,37 @@ import pszerszenowicz.domain.exception.PlayerNotInGameException;
 import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Player;
+import pszerszenowicz.domain.ports.game.Position;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.position.ChessPosition;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
+import java.util.*;
 
 public class ChessGame implements Game {
 
-    private final ChessBoard board = new ChessBoard();
+    private final ChessBoard board;
     private final List<ChessMove> moveHistory = new ArrayList<>();
     private Set<ChessMove> legalMoves;
-    private PieceColor actualPlayer;
     private ChessPosition position;
-//    private final ChessRules chessRules = new ChessRules();
     private GameStatus gameStatus;
     private final Player white;
     private final Player black;
     private final GameId gameId;
 
     public ChessGame(Player white, Player black) {
+        this.board = new ChessBoard();
         this.white = Objects.requireNonNull(white);
         this.black = Objects.requireNonNull(black);
         this.gameId = GameId.random();
         initGame();
+    }
+    public ChessGame(ChessGame chessGame) {
+        this.board = new ChessBoard(chessGame.board);
+        this.white = chessGame.white;
+        this.black = chessGame.black;
+        this.gameId = GameId.of(UUID.fromString("copy"));
     }
 
     @Override
@@ -55,6 +59,16 @@ public class ChessGame implements Game {
         gameStatus = GameStatus.ONGOING;
         position = new ChessPosition(board);
         legalMoves = position.legalMoves();
+    }
+
+    @Override
+    public GameStatus getStatus() {
+        return gameStatus;
+    }
+
+    @Override
+    public Position getPosition() {
+        return position;
     }
 
     @Override
@@ -79,7 +93,6 @@ public class ChessGame implements Game {
     }
 
     private void postMoveUpdates() {
-        actualPlayer = actualPlayer == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
         legalMoves = position.legalMoves();
         gameStatus = position.evaluateGameState();
     }
@@ -89,7 +102,7 @@ public class ChessGame implements Game {
     }
 
     private void validateTurn(Player player) {
-        if (actualPlayer != colorOf(player)) {
+        if (position.getSideToMove() != colorOf(player)) {
             throw new MoveNotAvailableForPlayerException();
         }
     }
@@ -98,6 +111,12 @@ public class ChessGame implements Game {
         if (player.equals(white)) return PieceColor.WHITE;
         if (player.equals(black)) return PieceColor.BLACK;
         throw new PlayerNotInGameException();
+    }
+
+    public Player playerOf(PieceColor pieceColor) {
+        if (pieceColor.equals(PieceColor.WHITE)) return white;
+        if (pieceColor.equals(PieceColor.BLACK)) return black;
+        throw new NullPointerException();
     }
 
 }
