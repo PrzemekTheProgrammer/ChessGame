@@ -8,11 +8,10 @@ import pszerszenowicz.domain.exception.PlayerNotInGameException;
 import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Player;
-import pszerszenowicz.domain.ports.game.Position;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.position.ChessPosition;
-
+import pszerszenowicz.games.chess.position.ZobristHasher;
 
 import java.util.*;
 
@@ -26,6 +25,7 @@ public class ChessGame implements Game {
     private final Player white;
     private final Player black;
     private final GameId gameId;
+    private final Map<Long, Integer> positionOccurrences = new HashMap<>();
 
     public ChessGame(Player white, Player black) {
         this.board = new ChessBoard();
@@ -38,7 +38,10 @@ public class ChessGame implements Game {
         this.board = new ChessBoard(chessGame.board);
         this.white = chessGame.white;
         this.black = chessGame.black;
-        this.gameId = GameId.of(UUID.fromString("copy"));
+        this.gameId = GameId.of(UUID.randomUUID());
+        this.position = new ChessPosition(chessGame.position);
+        this.gameStatus = chessGame.gameStatus;
+        this.legalMoves  = chessGame.legalMoves;
     }
 
     @Override
@@ -58,6 +61,9 @@ public class ChessGame implements Game {
         board.setBoard();
         gameStatus = GameStatus.ONGOING;
         position = new ChessPosition(board);
+        positionOccurrences.clear();
+        long hash = ZobristHasher.repetitionHash(position);
+        positionOccurrences.put(hash, 1);
         legalMoves = position.legalMoves();
     }
 
@@ -67,7 +73,7 @@ public class ChessGame implements Game {
     }
 
     @Override
-    public Position getPosition() {
+    public ChessPosition getPosition() {
         return position;
     }
 
@@ -87,14 +93,22 @@ public class ChessGame implements Game {
     }
 
     private void validateMove(ChessMove move) {
-        if (!legalMoves.contains(move)) {
+        boolean available = legalMoves.stream()
+                .anyMatch(legalMove ->
+                        legalMove.from().equals(move.from())
+                                && legalMove.to().equals(move.to())
+                                && legalMove.getTags().equals(move.getTags())
+                );
+
+        if (!available) {
             throw new MoveNotAvailableException(move);
         }
     }
 
     private void postMoveUpdates() {
         legalMoves = position.legalMoves();
-        gameStatus = position.evaluateGameState();
+        gameStatus = isThreefoldRepetition() ? GameStatus.STALEMATE : position.evaluateGameState();
+        registerPosition();
     }
 
     public void addToHistory(ChessMove move) {
@@ -117,6 +131,24 @@ public class ChessGame implements Game {
         if (pieceColor.equals(PieceColor.WHITE)) return white;
         if (pieceColor.equals(PieceColor.BLACK)) return black;
         throw new NullPointerException();
+    }
+
+    private void registerPosition() {
+
+        long hash = ZobristHasher.repetitionHash(position);
+
+        positionOccurrences.merge(
+                hash,
+                1,
+                Integer::sum
+        );
+    }
+
+    private boolean isThreefoldRepetition() {
+
+        long hash = ZobristHasher.repetitionHash(position);
+
+        return positionOccurrences.getOrDefault(hash, 0) >= 3;
     }
 
 }

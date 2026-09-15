@@ -1,5 +1,6 @@
 package pszerszenowicz.domain.ai;
 
+import pszerszenowicz.domain.ai.transposition.EvaluatorId;
 import pszerszenowicz.domain.ports.game.Position;
 
 public class HeuristicsEvaluator implements BoardEvaluator{
@@ -13,5 +14,10 @@ public class HeuristicsEvaluator implements BoardEvaluator{
                         return -piece.getValue();
                     }
                 })).sum();
+    }
+
+    @Override
+    public EvaluatorId getId() {
+        return EvaluatorId.HEURISTIC;
     }
 }

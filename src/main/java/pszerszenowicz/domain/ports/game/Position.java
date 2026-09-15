@@ -13,5 +13,6 @@ public interface Position {
     GameStatus evaluateGameState ();
     PieceColor getSideToMove();
     Board getBoard();
+    Long zobristHash();
 
 }

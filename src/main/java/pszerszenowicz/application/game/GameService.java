@@ -32,6 +32,11 @@ public class GameService {
         repo.save(game);
     }
 
+    public Game findGame(GameId id) {
+        return repo.find(id)
+                .orElseThrow(GameNotFoundException::new);
+    }
+
     public List<Game> myGames(Player p) {
         return repo.findByPlayer(p);
     }

@@ -106,7 +106,7 @@ public class ChessBoard implements Board {
         return lookup.get(getCoordinateAsString(horVal, verVal));
     }
 
-    private static String getCoordinateAsString(int horVal, int verVal) {
+    public static String getCoordinateAsString(int horVal, int verVal) {
         return "" + (char) ('A' + horVal - 1) + verVal;
     }
 
@@ -117,7 +117,12 @@ public class ChessBoard implements Board {
     }
 
     public ChessBoard(ChessBoard chessBoard) {
-        this.pieceCoordinate = new HashMap<>(chessBoard.pieceCoordinate);
+        this.pieceCoordinate = new HashMap<>();
+
+        for (Piece piece : chessBoard.pieceCoordinate.values()) {
+            Piece copy = copyPiece(piece);
+            this.pieceCoordinate.put(copy.getPieceCoordinate(), copy);
+        }
     }
 
     @Override
@@ -195,4 +200,33 @@ public class ChessBoard implements Board {
     public void removePiece(PieceCoordinate pieceCoordinate) {
         this.pieceCoordinate.remove(pieceCoordinate);
     }
+
+    private Piece copyPiece(Piece piece) {
+        PieceCoordinate coordinate = piece.getPieceCoordinate();
+        PieceColor color = piece.getColor();
+
+        if (piece instanceof Pawn) {
+            return new Pawn(coordinate, color);
+        }
+        if (piece instanceof Knight) {
+            return new Knight(coordinate, color);
+        }
+        if (piece instanceof Bishop) {
+            return new Bishop(coordinate, color);
+        }
+        if (piece instanceof Rook) {
+            return new Rook(coordinate, color);
+        }
+        if (piece instanceof Queen) {
+            return new Queen(coordinate, color);
+        }
+        if (piece instanceof King) {
+            return new King(coordinate, color);
+        }
+
+        throw new IllegalArgumentException(
+                "Unknown piece type: " + piece.getClass()
+        );
+    }
+
 }

@@ -27,6 +27,14 @@ public class ChessPosition implements Position {
         this.halfMoveClock = 0;
     }
 
+    public ChessPosition(ChessPosition chessPosition) {
+        this.chessBoard = new ChessBoard(chessPosition.chessBoard);
+        this.sideToMove = chessPosition.sideToMove;
+        this.castlingRights = chessPosition.castlingRights;
+        this.enPassantSquare = chessPosition.enPassantSquare;
+        this.halfMoveClock = chessPosition.halfMoveClock;
+    }
+
     public void updateFromSnapshot(ChessPositionSnapshot chessPositionSnapshot) {
         this.sideToMove = chessPositionSnapshot.getSideToMove();
         this.castlingRights = new CastlingRights(chessPositionSnapshot);
@@ -50,6 +58,11 @@ public class ChessPosition implements Position {
     @Override
     public Board getBoard() {
         return chessBoard;
+    }
+
+    @Override
+    public Long zobristHash() {
+        return ZobristHasher.hash(this);
     }
 
     public void oppositeSideToMove() {
@@ -80,6 +93,10 @@ public class ChessPosition implements Position {
         return halfMoveClock;
     }
 
+    public void incrementHalfMoveCLock() {
+        halfMoveClock++;
+    }
+
     public void setHalfMoveClock(int halfMoveClock) {
         this.halfMoveClock = halfMoveClock;
     }
@@ -108,7 +125,7 @@ public class ChessPosition implements Position {
             }
             return GameStatus.STALEMATE;
         }
-        if (getHalfMoveClock() >= 50) {
+        if (getHalfMoveClock() >= 100) {
             return GameStatus.STALEMATE;
         }
         return GameStatus.ONGOING;

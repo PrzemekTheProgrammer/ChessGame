@@ -127,6 +127,7 @@ public class ChessMove implements Move {
             }
         }
         position.oppositeSideToMove();
+        position.incrementHalfMoveCLock();
     }
 
     @Override
@@ -139,11 +140,18 @@ public class ChessMove implements Move {
             board.addPiece(auxillaryPiece);
         }
         if (hasTag(ChessMoveTags.Castle)) {
+            PieceCoordinate rookCurrent = auxillaryPiece.getPieceCoordinate();
+
             int rookColumn = to.getColumn() > from.getColumn() ? 8 : 1;
-            auxillaryPiece.setPieceCoordinate(ChessBoard.getCoordinate(
+            PieceCoordinate rookOriginal = ChessBoard.getCoordinate(
                     rookColumn,
-                    auxillaryPiece.getPieceCoordinate().getRow()
-            ));
+                    from.getRow()
+            );
+
+            board.removePiece(rookCurrent);
+
+            auxillaryPiece.setPieceCoordinate(rookOriginal);
+            board.addPiece(auxillaryPiece);
         }
         position.updateFromSnapshot(chessPositionSnapshot);
     }
