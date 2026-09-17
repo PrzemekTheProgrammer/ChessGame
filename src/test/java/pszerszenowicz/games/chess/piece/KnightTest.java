@@ -63,7 +63,7 @@ public class KnightTest {
         //then
         assertEquals(1,knightMoves.size());
         assertTrue(knightMoveCoordinate.contains(B6));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getKnightMoves_CaptureOnly2() {
@@ -87,7 +87,7 @@ public class KnightTest {
         //then
         assertEquals(3,knightMoves.size());
         assertTrue(knightMoveCoordinate.containsAll(Set.of(E6,F5,H5)));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getKnightMoves_MixedMoves() {
@@ -109,7 +109,7 @@ public class KnightTest {
         //then
         assertEquals(3,knightMoves.size());
         assertTrue(knightMoveCoordinate.containsAll(Set.of(C4,D3,D1)));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
-        assertTrue(movesTags.contains(ChessMoveTags.AttacksKing));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
+        assertTrue(movesTags.contains(ChessMoveTags.ATTACKS_KING));
     }
 }

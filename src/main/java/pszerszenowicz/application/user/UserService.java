@@ -30,13 +30,13 @@ public class UserService {
         userRepo.findByUsername(req.username())
                 .ifPresent(p -> { throw new UsernameAlreadyExistsException(req.username()); });
 
-        User player = User.register(
+        User user = User.register(
                 req.username(),
                 req.password(),
                 passwordEncoder);
 
-        userRepo.save(player);
-        String token = jwtService.generate(player.getId().uuid());
+        userRepo.save(user);
+        String token = jwtService.generate(user.getId().uuid());
         return new AuthResult(token);
     }
 

@@ -43,11 +43,11 @@ public class Rook extends Piece {
                         ChessMove to;
                         if(existingPiece instanceof King) {
                             to = new ChessMove(this,newCoord);
-                            to.addTag(ChessMoveTags.AttacksKing);
+                            to.addTag(ChessMoveTags.ATTACKS_KING);
                         }
                         else {
                             to = new ChessMove(this,newCoord,existingPiece);
-                            to.addTag(ChessMoveTags.Capture);
+                            to.addTag(ChessMoveTags.CAPTURE);
                         }
                         possibleMoves.add(to); // bicie
                     }

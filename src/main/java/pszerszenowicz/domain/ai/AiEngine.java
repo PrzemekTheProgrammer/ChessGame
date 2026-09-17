@@ -16,6 +16,12 @@ public class AiEngine {
     private final BoardEvaluator evaluator;
     private final TranspositionTable transpositionTable;
     private final RepetitionTracker repetitionTracker = new RepetitionTracker();
+    private final MoveOrdering moveOrdering = new MoveOrdering();
+    private long totalNodes;
+    private long nodes;
+    private long ttHits;
+    private long betaCutoffs;
+    long legalMoveGenerationTime;
 
     public AiEngine(BoardEvaluator evaluator, TranspositionTable transpositionTable) {
         this.evaluator = evaluator;
@@ -26,6 +32,8 @@ public class AiEngine {
         long deadline = System.currentTimeMillis() + timeLimitMs;
         Move bestMoveOverall = null;
         int currentDepth = 1;
+        totalNodes = 0;
+        legalMoveGenerationTime = 0;
 
         try {
             while (System.currentTimeMillis() < deadline) {
@@ -33,11 +41,15 @@ public class AiEngine {
                 if (bestMoveForDepth != null) {
                     bestMoveOverall = bestMoveForDepth; // Przypisujemy wynik tylko po ukończeniu całej głębokości
                 }
+                System.out.println("Deph = " + currentDepth);
+                System.out.println("nodes = " + nodes + ", ttHits = " + ttHits + ", betaCutoffs = " + betaCutoffs);
                 currentDepth++;
             }
         } catch (TimeOutException e) {
             // Przerwanie wykonywania z powodu upływu czasu
-            System.out.println("Zakończono myślenie z deph=" + currentDepth);
+            System.out.println("Zakończono myślenie z deph=" + (currentDepth - 1));
+            System.out.println("TotalNodes = " + totalNodes);
+            System.out.println("legalMove total generation time = " + legalMoveGenerationTime / 1_000_000_000.0);
         }
 
         return bestMoveOverall != null ? bestMoveOverall : position.legalMoves().stream().toList().getFirst();
@@ -53,8 +65,13 @@ public class AiEngine {
         int maxScore = -INFINITY;
         int alpha = -INFINITY;
         int beta = INFINITY;
-
-        for (ChessMove move : position.legalMoves()) {
+        nodes = 0;
+        ttHits = 0;
+        betaCutoffs = 0;
+        long start = System.nanoTime();
+        List<ChessMove> m = moveOrdering.order(position.legalMoves().stream().toList());
+        legalMoveGenerationTime = legalMoveGenerationTime + System.nanoTime() - start;
+        for (ChessMove move : m) {
             checkTimeout(deadline);
 
             move.apply(position);
@@ -93,6 +110,8 @@ public class AiEngine {
             long deadline
     ) throws TimeOutException {
 
+        nodes++;
+        totalNodes++;
         checkTimeout(deadline);
         int originalAlpha = alpha;
         int originalBeta = beta;
@@ -107,6 +126,7 @@ public class AiEngine {
         }
 
         if (entry != null && entry.depth() >= depth) {
+            ttHits++;
             switch (entry.bound()) {
                 case EXACT -> {
                     return entry.score();
@@ -123,8 +143,10 @@ public class AiEngine {
             }
         }
 
-        List<ChessMove> legalMoves = position.legalMoves().stream().toList();
-
+        long start = System.nanoTime();
+        List<ChessMove> m = position.legalMoves().stream().toList();
+        legalMoveGenerationTime = legalMoveGenerationTime + System.nanoTime() - start;
+        List<ChessMove> legalMoves = moveOrdering.order(m);
         if (legalMoves.isEmpty()) {
             return isKingAttacked(position)
                     ? -INFINITY - depth
@@ -140,7 +162,8 @@ public class AiEngine {
                     new TranspositionEntry(
                             0,
                             score,
-                            TranspositionEntry.Bound.EXACT
+                            TranspositionEntry.Bound.EXACT,
+                            hash
                     )
             );
 
@@ -150,7 +173,10 @@ public class AiEngine {
         int maxScore = -INFINITY;
 
         for (ChessMove move : legalMoves) {
-            checkTimeout(deadline);
+
+            if ((totalNodes & 2047) == 0) {
+                checkTimeout(deadline);
+            }
 
             move.apply(position);
 
@@ -171,6 +197,7 @@ public class AiEngine {
             alpha = Math.max(alpha, score);
 
             if (alpha >= beta) {
+                betaCutoffs++;
                 break;
             }
         }
@@ -190,7 +217,8 @@ public class AiEngine {
                 new TranspositionEntry(
                         depth,
                         maxScore,
-                        bound
+                        bound,
+                        hash
                 )
         );
 
@@ -215,7 +243,7 @@ public class AiEngine {
         try {
             return position.availableMoves()
                     .stream()
-                    .anyMatch(move -> move.hasTag(ChessMoveTags.AttacksKing));
+                    .anyMatch(move -> move.hasTag(ChessMoveTags.ATTACKS_KING));
         } finally {
             position.oppositeSideToMove();
         }

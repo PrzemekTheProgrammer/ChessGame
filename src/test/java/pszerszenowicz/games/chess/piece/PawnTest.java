@@ -48,7 +48,7 @@ public class PawnTest {
         assertEquals(2,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(B3));
         assertTrue(pawnMoveCoordinate.contains(B4));
-        assertTrue(movesTags.contains(ChessMoveTags.Charge));
+        assertTrue(movesTags.contains(ChessMoveTags.CHARGE));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class PawnTest {
         //then
         assertEquals(1,pawnMoves.size());
         assertEquals(C3,pawnMoves.iterator().next().to());
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class PawnTest {
         assertEquals(2,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(C3));
         assertTrue(pawnMoveCoordinate.contains(A3));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
 
     @Test
@@ -114,8 +114,8 @@ public class PawnTest {
         //then
         assertEquals(1,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(C6));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
-        assertTrue(movesTags.contains(ChessMoveTags.EnPassant));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
+        assertTrue(movesTags.contains(ChessMoveTags.EN_PASSANT));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PawnTest {
         //then
         assertEquals(4,pawnMoves.size());
         assertTrue(pawnMoveCoordinate.contains(B8));
-        assertTrue(movesTags.contains(ChessMoveTags.AttacksKing));
+        assertTrue(movesTags.contains(ChessMoveTags.ATTACKS_KING));
     }
     @Test
     public void getPawnMoves_Promote01() {

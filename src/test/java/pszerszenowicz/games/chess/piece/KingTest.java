@@ -77,7 +77,7 @@ public class KingTest {
         //then
         assertEquals(4,kingMoves.size());
         assertTrue(kingMoveCoordinate.containsAll(Set.of(F2,E2,D2,D1)));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class KingTest {
         //then
         assertEquals(2,kingMoves.size());
         assertTrue(kingMoveCoordinate.containsAll(Set.of(G1,G2)));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getKingMoves_Castle1() {
@@ -123,7 +123,7 @@ public class KingTest {
         //then
         assertEquals(6,kingMoves.size());
         assertTrue(kingMoveCoordinate.containsAll(Set.of(F1,G1,D2,E2,F2,D1)));
-        assertTrue(movesTags.contains(ChessMoveTags.Castle));
+        assertTrue(movesTags.contains(ChessMoveTags.CASTLE));
     }
     @Test
     public void getKingMoves_Castle2() {
@@ -143,7 +143,7 @@ public class KingTest {
         //then
         assertEquals(7,kingMoves.size());
         assertTrue(kingMoveCoordinate.containsAll(Set.of(F1,G1,D2,E2,F2,D1,C1)));
-        assertTrue(movesTags.contains(ChessMoveTags.Castle));
+        assertTrue(movesTags.contains(ChessMoveTags.CASTLE));
     }
     @Test
     public void getKingMoves_MixedMoves() {
@@ -167,9 +167,9 @@ public class KingTest {
         //then
         assertEquals(5,kingMoves.size());
         assertTrue(kingMoveCoordinate.containsAll(Set.of(F1,G1,D2,F2,D1)));
-        assertTrue(movesTags.contains(ChessMoveTags.Castle));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
-        assertTrue(movesTags.contains(ChessMoveTags.AttacksKing));
+        assertTrue(movesTags.contains(ChessMoveTags.CASTLE));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
+        assertTrue(movesTags.contains(ChessMoveTags.ATTACKS_KING));
     }
 
 

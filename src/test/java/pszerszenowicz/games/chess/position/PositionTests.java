@@ -83,25 +83,38 @@ public class PositionTests {
 
     @Test
     public void getLegalMovesTest_EnPassant01() {
-        //given
+        // given
         ChessBoard board = new ChessBoard();
         ChessPosition position = new ChessPosition(board);
+
+        King whiteKing = new King(E1, PieceColor.WHITE);
+        King blackKing = new King(E8, PieceColor.BLACK);
+
         Pawn testedPiece = new Pawn(F5, PieceColor.WHITE);
+        Pawn tmpPiece = new Pawn(E5, PieceColor.BLACK);
+
+        board.addPiece(whiteKing);
+        board.addPiece(blackKing);
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(E5, PieceColor.BLACK);
         board.addPiece(tmpPiece);
+
         position.setEnPassantSquare(E6);
-        //when
-        Set<ChessMove> avaibleMoves = position.legalMoves();
-        Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
-                .collect(Collectors
-                        .groupingBy(
+
+        // when
+        Set<ChessMove> availableMoves = position.legalMoves();
+
+        Map<PieceCoordinate, Set<Piece>> pieceLegalMove =
+                availableMoves.stream()
+                        .filter(move -> move.piece() == testedPiece)
+                        .collect(Collectors.groupingBy(
                                 ChessMove::to,
                                 Collectors.mapping(
                                         ChessMove::piece,
-                                        Collectors.toSet())));
-        //then
-        assertEquals(2, avaibleMoves.size());
+                                        Collectors.toSet()
+                                )
+                        ));
+
+        // then
         assertEquals(Set.of(F6, E6), pieceLegalMove.keySet());
         assertTrue(pieceLegalMove.get(F6).contains(testedPiece));
         assertTrue(pieceLegalMove.get(E6).contains(testedPiece));
@@ -109,24 +122,42 @@ public class PositionTests {
 
     @Test
     public void getLegalMovesTest_EnPassantNotAvailable01() {
-        //given
+        // given
         ChessBoard board = new ChessBoard();
         ChessPosition position = new ChessPosition(board);
+
         Pawn testedPiece = new Pawn(F5, PieceColor.WHITE);
+        Pawn blackPawn = new Pawn(E5, PieceColor.BLACK);
+        King whiteKing = new King(E1, PieceColor.WHITE);
+        King blackKing = new King(E8, PieceColor.BLACK);
+
         board.addPiece(testedPiece);
-        Piece tmpPiece = new Pawn(E5, PieceColor.BLACK);
-        board.addPiece(tmpPiece);
-        //when
-        Set<ChessMove> avaibleMoves = position.legalMoves();
-        Map<PieceCoordinate, Set<Piece>> pieceLegalMove = avaibleMoves.stream()
-                .collect(Collectors
-                        .groupingBy(
+        board.addPiece(blackPawn);
+        board.addPiece(whiteKing);
+        board.addPiece(blackKing);
+
+        // brak:
+        // position.setEnPassantSquare(E6);
+
+        // when
+        Set<ChessMove> legalMoves = position.legalMoves();
+
+        Set<ChessMove> testedPieceMoves = legalMoves.stream()
+                .filter(move -> move.piece() == testedPiece)
+                .collect(Collectors.toSet());
+
+        Map<PieceCoordinate, Set<Piece>> pieceLegalMove =
+                testedPieceMoves.stream()
+                        .collect(Collectors.groupingBy(
                                 ChessMove::to,
                                 Collectors.mapping(
                                         ChessMove::piece,
-                                        Collectors.toSet())));
-        //then
-        assertEquals(1, avaibleMoves.size());
+                                        Collectors.toSet()
+                                )
+                        ));
+
+        // then
+        assertEquals(1, testedPieceMoves.size());
         assertEquals(Set.of(F6), pieceLegalMove.keySet());
         assertTrue(pieceLegalMove.get(F6).contains(testedPiece));
     }

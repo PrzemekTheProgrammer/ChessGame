@@ -78,10 +78,10 @@ public class ChessMove implements Move {
         board.removePiece(from);
         piece.setPieceCoordinate(to);
         board.addPiece(piece);
-        if (hasTag(ChessMoveTags.EnPassant)) {
+        if (hasTag(ChessMoveTags.EN_PASSANT)) {
             board.removePiece(auxillaryPiece.getPieceCoordinate());
         }
-        if (hasTag(ChessMoveTags.Castle)) {
+        if (hasTag(ChessMoveTags.CASTLE)) {
             board.removePiece(auxillaryPiece.getPieceCoordinate());
             int direction = to.getColumn() > from.getColumn() ? -1 : 1;
             auxillaryPiece.setPieceCoordinate(ChessBoard.getCoordinate(
@@ -136,10 +136,10 @@ public class ChessMove implements Move {
         board.removePiece(to);
         piece.setPieceCoordinate(from);
         board.addPiece(piece);
-        if (hasTag(ChessMoveTags.Capture)) {
+        if (hasTag(ChessMoveTags.CAPTURE)) {
             board.addPiece(auxillaryPiece);
         }
-        if (hasTag(ChessMoveTags.Castle)) {
+        if (hasTag(ChessMoveTags.CASTLE)) {
             PieceCoordinate rookCurrent = auxillaryPiece.getPieceCoordinate();
 
             int rookColumn = to.getColumn() > from.getColumn() ? 8 : 1;

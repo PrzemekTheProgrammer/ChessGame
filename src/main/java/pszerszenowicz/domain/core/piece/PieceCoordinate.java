@@ -31,4 +31,10 @@ public class PieceCoordinate {
     public int hashCode() {
         return Objects.hash(row, column);
     }
+
+    @Override
+    public String toString() {
+        return "column=" + column +
+                ", row=" + row;
+    }
 }

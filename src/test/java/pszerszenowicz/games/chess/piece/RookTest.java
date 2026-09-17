@@ -71,7 +71,7 @@ public class RookTest {
         assertEquals(2,rookMoves.size());
         assertTrue(rookMoveCoordinate.contains(C4));
         assertTrue(rookMoveCoordinate.contains(E4));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getRookMoves_CaptureOnly2() {
@@ -93,7 +93,7 @@ public class RookTest {
         //then
         assertEquals(2,rookMoves.size());
         assertTrue(rookMoveCoordinate.containsAll(Set.of(A4,B3)));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getRookMoves_MixedMoves() {
@@ -115,7 +115,7 @@ public class RookTest {
         //then
         assertEquals(9,rookMoves.size());
         assertTrue(rookMoveCoordinate.containsAll(Set.of(H4,H3,H2,H6,H7,G5,F5,E5,D5)));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
-        assertTrue(movesTags.contains(ChessMoveTags.AttacksKing));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
+        assertTrue(movesTags.contains(ChessMoveTags.ATTACKS_KING));
     }
 }

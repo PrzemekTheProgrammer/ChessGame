@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import pszerszenowicz.domain.core.piece.Piece;
 import pszerszenowicz.domain.core.piece.PieceColor;
 import pszerszenowicz.domain.core.piece.PieceCoordinate;
-import pszerszenowicz.domain.ports.game.Board;
 import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.position.ChessBoard;
@@ -71,7 +70,7 @@ public class BishopTest {
         assertEquals(2,bishopMoves.size());
         assertTrue(bishopMoveCoordinate.contains(E3));
         assertTrue(bishopMoveCoordinate.contains(E5));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getBishopMoves_CaptureOnly2() {
@@ -98,7 +97,7 @@ public class BishopTest {
         assertTrue(bishopMoveCoordinate.contains(E5));
         assertTrue(bishopMoveCoordinate.contains(C3));
         assertTrue(bishopMoveCoordinate.contains(C5));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getBishopMoves_MixedMoves() {
@@ -122,7 +121,7 @@ public class BishopTest {
         //then
         assertEquals(5,bishopMoves.size());
         assertTrue(bishopMoveCoordinate.containsAll(Set.of(C3,C5,E3,E5,F6)));
-        assertTrue(movesTags.containsAll(Set.of(ChessMoveTags.Capture, ChessMoveTags.AttacksKing)));
+        assertTrue(movesTags.containsAll(Set.of(ChessMoveTags.CAPTURE, ChessMoveTags.ATTACKS_KING)));
     }
 
 }

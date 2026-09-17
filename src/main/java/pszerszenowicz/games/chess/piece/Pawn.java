@@ -101,10 +101,10 @@ public class Pawn extends Piece {
                 ChessMove move;
                 if (existingPiece instanceof King) {
                     move = new ChessMove(this, newCoord);
-                    move.addTag(ChessMoveTags.AttacksKing);
+                    move.addTag(ChessMoveTags.ATTACKS_KING);
                 } else {
                     move = new ChessMove(this, newCoord, existingPiece);
-                    move.addTag(ChessMoveTags.Capture);
+                    move.addTag(ChessMoveTags.CAPTURE);
                 }
                 ret.add(move);
             }
@@ -131,7 +131,7 @@ public class Pawn extends Piece {
                 existingPiece = board.getPiece(newCoord);
                 if (existingPiece == null) {
                     ChessMove move = new ChessMove(this, newCoord);
-                    move.addTag(ChessMoveTags.Charge);
+                    move.addTag(ChessMoveTags.CHARGE);
                     return move;
                 }
             }
@@ -149,8 +149,8 @@ public class Pawn extends Piece {
                 capturedPiece = board.getPiece(ChessBoard.getCoordinate(enPassantSquare.getColumn(),4));
             }
             ChessMove move = new ChessMove(this, enPassantSquare, capturedPiece);
-            move.addTag(ChessMoveTags.EnPassant);
-            move.addTag(ChessMoveTags.Capture);
+            move.addTag(ChessMoveTags.EN_PASSANT);
+            move.addTag(ChessMoveTags.CAPTURE);
             return move;
         }
         return null;

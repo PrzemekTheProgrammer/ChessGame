@@ -28,7 +28,7 @@ public class ChessMoveTest {
         Piece tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,C1,tmpPiece);
-        move.addTag(ChessMoveTags.Castle);
+        move.addTag(ChessMoveTags.CASTLE);
         move.apply(position);
         List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
@@ -49,7 +49,7 @@ public class ChessMoveTest {
         Piece tmpPiece = new Rook(H8,PieceColor.BLACK);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,G8,tmpPiece);
-        move.addTag(ChessMoveTags.Castle);
+        move.addTag(ChessMoveTags.CASTLE);
         move.apply(position);
         List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
@@ -70,7 +70,7 @@ public class ChessMoveTest {
         Piece tmpPiece = new Rook(H8,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,H8,tmpPiece);
-        move.addTag(ChessMoveTags.Capture);
+        move.addTag(ChessMoveTags.CAPTURE);
         move.apply(position);
         List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
@@ -93,7 +93,7 @@ public class ChessMoveTest {
         tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,A1,tmpPiece);
-        move.addTag(ChessMoveTags.Capture);
+        move.addTag(ChessMoveTags.CAPTURE);
         move.apply(position);
         List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
@@ -114,8 +114,8 @@ public class ChessMoveTest {
         Piece tmpPiece = new Pawn(F4,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,F3,tmpPiece);
-        move.addTag(ChessMoveTags.EnPassant);
-        move.addTag(ChessMoveTags.Capture);
+        move.addTag(ChessMoveTags.EN_PASSANT);
+        move.addTag(ChessMoveTags.CAPTURE);
         move.apply(position);
         List<Piece> pieces = board.pieces();
         List<PieceCoordinate> pieceCoordinates = pieces.stream().map(Piece::getPieceCoordinate).toList();
@@ -136,7 +136,7 @@ public class ChessMoveTest {
         Piece tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,C1,tmpPiece);
-        move.addTag(ChessMoveTags.Castle);
+        move.addTag(ChessMoveTags.CASTLE);
         move.apply(position);
         move.undo(position);
         List<Piece> pieces = board.pieces();
@@ -161,7 +161,7 @@ public class ChessMoveTest {
         tmpPiece = new Rook(A1,PieceColor.WHITE);
         board.addPiece(tmpPiece);
         ChessMove move = new ChessMove(testedPiece,A1,tmpPiece);
-        move.addTag(ChessMoveTags.Capture);
+        move.addTag(ChessMoveTags.CAPTURE);
         move.apply(position);
         move.undo(position);
         List<Piece> pieces = board.pieces();

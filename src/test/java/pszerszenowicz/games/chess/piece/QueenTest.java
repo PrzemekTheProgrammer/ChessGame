@@ -96,7 +96,7 @@ public class QueenTest {
         assertTrue(rookMoveCoordinate.contains(C5));
         assertTrue(rookMoveCoordinate.contains(D5));
         assertTrue(rookMoveCoordinate.contains(E5));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getQueenMoves_CaptureOnly2() {
@@ -120,7 +120,7 @@ public class QueenTest {
         assertTrue(rookMoveCoordinate.contains(A2));
         assertTrue(rookMoveCoordinate.contains(B1));
         assertTrue(rookMoveCoordinate.contains(B2));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
     }
     @Test
     public void getQueenMoves_MixedMoves() {
@@ -143,7 +143,7 @@ public class QueenTest {
         assertEquals(2,rookMoves.size());
         assertTrue(rookMoveCoordinate.contains(G7));
         assertTrue(rookMoveCoordinate.contains(G8));
-        assertTrue(movesTags.contains(ChessMoveTags.Capture));
-        assertTrue(movesTags.contains(ChessMoveTags.AttacksKing));
+        assertTrue(movesTags.contains(ChessMoveTags.CAPTURE));
+        assertTrue(movesTags.contains(ChessMoveTags.ATTACKS_KING));
     }
 }
