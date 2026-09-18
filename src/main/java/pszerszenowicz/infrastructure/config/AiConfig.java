@@ -7,6 +7,9 @@ import pszerszenowicz.domain.ai.AiEngine;
 import pszerszenowicz.domain.ai.HeuristicsEvaluator;
 import pszerszenowicz.domain.ai.transposition.TranspositionTableRegistry;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 @Configuration
 public class AiConfig {
     @Bean
@@ -17,6 +20,11 @@ public class AiConfig {
     @Bean
     public TranspositionTableRegistry transpositionTableRegistry() {
         return new TranspositionTableRegistry();
+    }
+
+    @Bean
+    public Executor aiExecutor() {
+        return Executors.newFixedThreadPool(2);
     }
 
     @Bean("heuristicAiEngine")

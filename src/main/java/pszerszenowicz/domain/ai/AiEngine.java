@@ -180,6 +180,9 @@ public class AiEngine {
 
             move.apply(position);
 
+            move.apply(position);
+            repetitionTracker.add(position);
+
             int score;
             try {
                 score = -negamaxWithDeadline(
@@ -190,6 +193,7 @@ public class AiEngine {
                         deadline
                 );
             } finally {
+                repetitionTracker.remove(position);
                 move.undo(position);
             }
 

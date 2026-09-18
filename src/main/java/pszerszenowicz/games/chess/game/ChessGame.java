@@ -2,6 +2,7 @@ package pszerszenowicz.games.chess.game;
 
 import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.core.piece.PieceColor;
+import pszerszenowicz.domain.core.piece.PieceCoordinate;
 import pszerszenowicz.domain.exception.MoveNotAvailableException;
 import pszerszenowicz.domain.exception.MoveNotAvailableForPlayerException;
 import pszerszenowicz.domain.exception.PlayerNotInGameException;
@@ -149,6 +150,42 @@ public class ChessGame implements Game {
         long hash = ZobristHasher.repetitionHash(position);
 
         return positionOccurrences.getOrDefault(hash, 0) >= 3;
+    }
+
+    public ChessMove findLegalMove(
+            PieceCoordinate from,
+            PieceCoordinate to
+    ) {
+        return legalMoves.stream()
+                .filter(move ->
+                        move.from().equals(from)
+                                && move.to().equals(to)
+                )
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Legal move not found: "
+                                        + from + " -> " + to
+                        )
+                );
+    }
+
+    public ChessMove findLegalMove(ChessMove searchedMove) {
+        return legalMoves.stream()
+                .filter(move ->
+                        move.from().equals(searchedMove.from())
+                                && move.to().equals(searchedMove.to())
+                                && move.getTags().equals(searchedMove.getTags())
+                )
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Legal move not found: "
+                                        + searchedMove.from()
+                                        + " -> "
+                                        + searchedMove.to()
+                        )
+                );
     }
 
 }

@@ -121,10 +121,9 @@ public class ChessPosition implements Position {
         this.halfMoveClock = halfMoveClock;
     }
 
-    @Override
     public Set<ChessMove> legalMoves() {
         return availableMoves().stream()
-                .filter(move -> isMoveLegal(move))
+                .filter(this::isMoveLegal)
                 .collect(Collectors.toSet());
     }
 

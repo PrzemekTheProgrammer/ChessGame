@@ -106,6 +106,21 @@ public class ChessBoard implements Board {
         return lookup.get(getCoordinateAsString(horVal, verVal));
     }
 
+    public static PieceCoordinate getCoordinate(String square) {
+        if (square == null || !square.matches("[A-Ha-h][1-8]")) {
+            throw new IllegalArgumentException(
+                    "Invalid chess coordinate: " + square
+            );
+        }
+
+        String normalized = square.toUpperCase();
+
+        int column = normalized.charAt(0) - 'A' + 1;
+        int row = normalized.charAt(1) - '0';
+
+        return getCoordinate(column, row);
+    }
+
     public static String getCoordinateAsString(int horVal, int verVal) {
         return "" + (char) ('A' + horVal - 1) + verVal;
     }

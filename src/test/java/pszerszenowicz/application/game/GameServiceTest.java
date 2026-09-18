@@ -11,6 +11,7 @@ import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Player;
+import pszerszenowicz.games.chess.game.ChessGame;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class GameServiceTest {
         GameId id = GameId.random();
         Move move = mock(Move.class);
         Player player = mock(Player.class);
-        Game game = mock(Game.class);
+        ChessGame game = mock(ChessGame.class);
 
         when(repo.find(id)).thenReturn(Optional.of(game));
 
@@ -81,12 +82,12 @@ public class GameServiceTest {
     void myGames_shouldReturnGamesFromRepository() {
         // given
         Player player = mock(Player.class);
-        List<Game> games = List.of(mock(Game.class), mock(Game.class));
+        List<ChessGame> games = List.of(mock(ChessGame.class), mock(ChessGame.class));
 
         when(repo.findByPlayer(player)).thenReturn(games);
 
         // when
-        List<Game> result = gameService.myGames(player);
+        List<ChessGame> result = gameService.myGames(player);
 
         // then
         assertEquals(games, result);
