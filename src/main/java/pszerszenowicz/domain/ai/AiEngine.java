@@ -177,9 +177,6 @@ public class AiEngine {
             if ((totalNodes & 2047) == 0) {
                 checkTimeout(deadline);
             }
-
-            move.apply(position);
-
             move.apply(position);
             repetitionTracker.add(position);
 

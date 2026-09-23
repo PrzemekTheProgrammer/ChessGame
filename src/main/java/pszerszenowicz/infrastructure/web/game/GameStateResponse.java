@@ -12,6 +12,8 @@ public record GameStateResponse(
         PieceColor myColor,
         PieceColor sideToMove,
         List<PieceResponse> pieces,
-        List<MoveResponse> legalMoves
+        List<MoveResponse> legalMoves,
+        String opponent,
+        MoveResponse lastMove
 ) {
 }

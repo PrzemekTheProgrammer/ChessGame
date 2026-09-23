@@ -25,7 +25,6 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    // Rejestracja
     public AuthResult register(RegisterCommand req) {
         userRepo.findByUsername(req.username())
                 .ifPresent(p -> { throw new UsernameAlreadyExistsException(req.username()); });
@@ -40,7 +39,6 @@ public class UserService {
         return new AuthResult(token);
     }
 
-    // Logowanie
     public AuthResult login(LoginCommand req) {
         User player = userRepo.findByUsername(req.username())
                 .orElseThrow(InvalidCredentialsException::new);

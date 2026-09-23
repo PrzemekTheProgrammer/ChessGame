@@ -50,7 +50,7 @@ public class ChessPosition implements Position {
     public ChessPosition(ChessPosition chessPosition) {
         this.chessBoard = new ChessBoard(chessPosition.chessBoard);
         this.sideToMove = chessPosition.sideToMove;
-        this.castlingRights = chessPosition.castlingRights;
+        this.castlingRights = new CastlingRights(chessPosition);
         this.enPassantSquare = chessPosition.enPassantSquare;
         this.halfMoveClock = chessPosition.halfMoveClock;
     }
@@ -159,7 +159,7 @@ public class ChessPosition implements Position {
                 .collect(Collectors.toSet());
     }
 
-    public boolean isSquareAttacked(
+    private boolean isSquareAttacked(
             PieceCoordinate square,
             PieceColor attackerColor
     ) {

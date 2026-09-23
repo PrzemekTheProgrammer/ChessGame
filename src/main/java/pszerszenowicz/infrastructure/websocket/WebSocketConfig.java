@@ -31,6 +31,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                         "/ws/games/{gameId}"
                 )
                 .addInterceptors(jwtHandshakeInterceptor)
-                .setAllowedOrigins("http://localhost:5173");
+                .setAllowedOrigins("http://localhost:5173",
+                        "http://192.168.0.177:5173");
     }
 }

@@ -15,6 +15,7 @@ import pszerszenowicz.domain.core.user.UserId;
 import pszerszenowicz.domain.exception.PlayerNotInGameException;
 import pszerszenowicz.domain.ports.game.Player;
 import pszerszenowicz.games.chess.game.ChessGame;
+import pszerszenowicz.games.chess.game.GameStatus;
 import pszerszenowicz.games.chess.move.ChessMove;
 import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.infrastructure.web.game.GameStateMapper;
@@ -67,11 +68,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         if (gameSessions.isEmpty()) {
             sessions.remove(gameId, gameSessions);
         }
-        System.out.println(
-                "WS CONNECTION CLOSED: "
-                        + session.getId()
-                        + ", status=" + status
-        );
     }
 
     @Override
@@ -86,11 +82,11 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         UserId userId = UserId.of(rawUserId);
         GameId gameId = extractGameId(session);
 
+        sessions.computeIfAbsent(
+                gameId,
+                id -> ConcurrentHashMap.newKeySet()
+        ).add(session);
         runBotIfNeeded(gameId);
-        System.out.println(
-                "WS CONNECTION ESTABLISHED: "
-                        + session.getId()
-        );
     }
 
     @Override
@@ -131,12 +127,9 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
         gameService.makeMove(gameId, move, player);
 
-        // człowiek natychmiast widzi swój ruch
         broadcastState(gameId);
 
-        // AI liczy już poza wątkiem WebSocket
         runBotIfNeeded(gameId);
-
     }
 
     private void broadcastState(GameId gameId) {
@@ -150,6 +143,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         ChessGame game = gameService.findGame(gameId);
 
         for (WebSocketSession session : gameSessions) {
+
             if (!session.isOpen()) {
                 continue;
             }
@@ -213,9 +207,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     private void runBotIfNeeded(
             GameId gameId
     ) {
-        System.out.println(
-                "RUN BOT CHECK: game=" + gameId
-        );
         if (!gamesWithRunningAi.add(gameId)) {
             return;
         }
@@ -223,15 +214,13 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         try {
             ChessGame game = gameService.findGame(gameId);
 
+            if (game.getStatus() != GameStatus.ONGOING) {
+                gamesWithRunningAi.remove(gameId);
+                return;
+            }
+
             Player currentPlayer =
                     game.playerOf(game.getPosition().getSideToMove());
-
-            System.out.println(
-                    "RUN BOT CHECK: side="
-                            + game.getPosition().getSideToMove()
-                            + ", player="
-                            + currentPlayer.getClass().getSimpleName()
-            );
 
             if (!(currentPlayer instanceof BotPlayer)) {
                 gamesWithRunningAi.remove(gameId);
@@ -241,13 +230,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
             aiExecutor.execute(() -> {
                 try {
                     gameService.makeBotMove(gameId, 3000);
-
-                    System.out.println("BOT MOVE: broadcasting");
-
                     broadcastState(gameId);
-
-                    System.out.println("BOT MOVE: broadcast finished");
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

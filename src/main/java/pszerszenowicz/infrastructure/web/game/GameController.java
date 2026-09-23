@@ -7,7 +7,6 @@ import pszerszenowicz.application.game.GameService;
 import pszerszenowicz.application.game.PlayerColorChoice;
 import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.core.user.UserId;
-import pszerszenowicz.games.chess.game.ChessGame;
 import pszerszenowicz.infrastructure.security.CurrentUserProvider;
 
 import java.util.UUID;
@@ -60,14 +59,13 @@ public class GameController {
             @PathVariable UUID id
     ) {
         UserId userId = currentUser.get();
-
-        ChessGame game = gameService.findGame(
-                GameId.of(id)
-        );
-
-        return gameStateMapper.toResponse(
-                game,
-                userId
+        GameId gameId = GameId.of(id);
+        return gameService.withGame(
+                gameId,
+                game -> gameStateMapper.toResponse(
+                        game,
+                        userId
+                )
         );
     }
 

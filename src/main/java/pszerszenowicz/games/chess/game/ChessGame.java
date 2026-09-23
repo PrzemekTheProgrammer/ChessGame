@@ -108,8 +108,8 @@ public class ChessGame implements Game {
 
     private void postMoveUpdates() {
         legalMoves = position.legalMoves();
-        gameStatus = isThreefoldRepetition() ? GameStatus.STALEMATE : position.evaluateGameState();
         registerPosition();
+        gameStatus = isThreefoldRepetition() ? GameStatus.STALEMATE : position.evaluateGameState();
     }
 
     public void addToHistory(ChessMove move) {
@@ -138,17 +138,27 @@ public class ChessGame implements Game {
 
         long hash = ZobristHasher.repetitionHash(position);
 
-        positionOccurrences.merge(
+        int count = positionOccurrences.merge(
                 hash,
                 1,
                 Integer::sum
+        );
+        System.out.println(
+                "REGISTER POSITION: hash=" + hash
+                        + ", count=" + count
+                        + ", side=" + position.getSideToMove()
         );
     }
 
     private boolean isThreefoldRepetition() {
 
         long hash = ZobristHasher.repetitionHash(position);
-
+        int count = positionOccurrences.getOrDefault(hash, 0);
+        System.out.println(
+                "THREEFOLD CHECK: hash=" + hash
+                        + ", count=" + count
+                        + ", side=" + position.getSideToMove()
+        );
         return positionOccurrences.getOrDefault(hash, 0) >= 3;
     }
 
@@ -188,4 +198,7 @@ public class ChessGame implements Game {
                 );
     }
 
+    public List<ChessMove> getMoveHistory() {
+        return moveHistory;
+    }
 }

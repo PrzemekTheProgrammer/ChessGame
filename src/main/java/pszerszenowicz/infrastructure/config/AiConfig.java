@@ -28,6 +28,7 @@ public class AiConfig {
     }
 
     @Bean("heuristicAiEngine")
+    @Scope("prototype")
     public AiEngine heuristicAiEngine(
             HeuristicsEvaluator evaluator,
             TranspositionTableRegistry ttRegistry
