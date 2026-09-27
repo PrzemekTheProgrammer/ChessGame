@@ -14,5 +14,7 @@ public interface InvitationRepository {
 
     List<GameInvitation> findByUser(UserId userId);
 
+    List<GameInvitation> findReceivedByUser(UserId userId);
+
     void delete(InvitationId id);
 }

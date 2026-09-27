@@ -1,6 +1,9 @@
 package pszerszenowicz.infrastructure.persistence.user;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
+import pszerszenowicz.application.dto.PageResult;
 import pszerszenowicz.domain.core.user.User;
 import pszerszenowicz.application.ports.user.UserRepository;
 
@@ -34,5 +37,28 @@ public class JpaUserRepository implements UserRepository {
     public User save(User player) {
         UserEntity entity = mapper.toEntity(player);
         return mapper.toDomain(jpa.save(entity));
+    }
+
+    @Override
+    public PageResult<User> searchByUsername(
+            String query,
+            int page,
+            int size
+    ) {
+        Page<UserEntity> result =
+                jpa.findByUsernameContainingIgnoreCase(
+                        query,
+                        PageRequest.of(page, size)
+                );
+
+        return new PageResult<>(
+                result.getContent()
+                        .stream()
+                        .map(mapper::toDomain)
+                        .toList(),
+                result.getNumber(),
+                result.getTotalPages(),
+                result.getTotalElements()
+        );
     }
 }

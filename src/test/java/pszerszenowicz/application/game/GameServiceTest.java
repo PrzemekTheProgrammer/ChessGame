@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pszerszenowicz.application.exception.GameNotFoundException;
+import pszerszenowicz.application.player.HumanPlayer;
 import pszerszenowicz.application.ports.game.GameRepository;
 import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.ports.game.Game;
@@ -76,24 +77,5 @@ public class GameServiceTest {
         verifyNoMoreInteractions(repo);
     }
 
-    // ---------- myGames ----------
-
-    @Test
-    void myGames_shouldReturnGamesFromRepository() {
-        // given
-        Player player = mock(Player.class);
-        List<ChessGame> games = List.of(mock(ChessGame.class), mock(ChessGame.class));
-
-        when(repo.findByPlayer(player)).thenReturn(games);
-
-        // when
-        List<ChessGame> result = gameService.myGames(player);
-
-        // then
-        assertEquals(games, result);
-
-        verify(repo).findByPlayer(player);
-        verifyNoMoreInteractions(repo);
-    }
 
 }

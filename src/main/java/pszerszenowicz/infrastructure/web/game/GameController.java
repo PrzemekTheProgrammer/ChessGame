@@ -4,11 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pszerszenowicz.application.game.GameService;
+import pszerszenowicz.application.game.GameSummaryResult;
 import pszerszenowicz.application.game.PlayerColorChoice;
 import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.core.user.UserId;
+import pszerszenowicz.games.chess.game.GameStatus;
 import pszerszenowicz.infrastructure.security.CurrentUserProvider;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +69,16 @@ public class GameController {
                         game,
                         userId
                 )
+        );
+    }
+
+    @GetMapping
+    public List<GameSummaryResult> getGames(
+            @RequestParam GameStatus status
+    ) {
+        return gameService.findGamesByUser(
+                currentUser.get(),
+                status
         );
     }
 

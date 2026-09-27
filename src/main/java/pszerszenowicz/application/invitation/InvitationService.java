@@ -5,8 +5,12 @@ import pszerszenowicz.application.game.GameService;
 import pszerszenowicz.application.invitation.exception.InvitationNotFoundException;
 import pszerszenowicz.application.ports.PlayerFactory;
 import pszerszenowicz.application.ports.invitation.InvitationRepository;
+import pszerszenowicz.application.ports.user.UserRepository;
 import pszerszenowicz.domain.core.game.GameId;
+import pszerszenowicz.domain.core.user.User;
 import pszerszenowicz.domain.core.user.UserId;
+
+import java.util.List;
 
 @Service
 public class InvitationService {
@@ -14,11 +18,17 @@ public class InvitationService {
     private final InvitationRepository repo;
     private final GameService gameService;
     private final PlayerFactory playerFactory;
+    private final UserRepository userRepository;
 
-    public InvitationService(InvitationRepository repo, GameService gameService, PlayerFactory playerFactory) {
+    public InvitationService(InvitationRepository repo,
+                             GameService gameService,
+                             PlayerFactory playerFactory,
+                             UserRepository userRepository)
+    {
         this.repo = repo;
         this.gameService = gameService;
         this.playerFactory = playerFactory;
+        this.userRepository = userRepository;
     }
 
     public InvitationId invite(UserId from, UserId to, ColorChoice colorChoice) {
@@ -33,9 +43,11 @@ public class InvitationService {
 
         inv.accept(user);
 
+        GameInvitation.ResolvedColors colors = inv.resolveColors();
+
         GameId gameId = gameService.createGame(
-                playerFactory.createHuman(inv.resolveWhiteUser()),
-                playerFactory.createHuman(inv.resolveBlackUser())
+                playerFactory.createHuman(colors.white()),
+                playerFactory.createHuman(colors.black())
         );
 
         repo.delete(id);
@@ -49,5 +61,23 @@ public class InvitationService {
 
         inv.decline(user);
         repo.delete(id);
+    }
+
+    public List<InvitationResult> receivedInvitations(UserId userId) {
+        return repo.findReceivedByUser(userId)
+                .stream()
+                .map(invitation -> {
+                    User fromUser = userRepository
+                            .findById(invitation.getFrom().uuid())
+                            .orElseThrow();
+
+                    return new InvitationResult(
+                            invitation.getId().id(),
+                            invitation.getFrom().uuid(),
+                            fromUser.getUserName(),
+                            invitation.getColorChoice()
+                    );
+                })
+                .toList();
     }
 }

@@ -1,12 +1,7 @@
 package pszerszenowicz.infrastructure.web.user;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pszerszenowicz.application.dto.AuthResult;
-import pszerszenowicz.application.dto.LoginCommand;
-import pszerszenowicz.application.dto.RegisterCommand;
+import org.springframework.web.bind.annotation.*;
+import pszerszenowicz.application.dto.*;
 import pszerszenowicz.application.user.UserService;
 import pszerszenowicz.infrastructure.web.auth.dto.AuthResponse;
 import pszerszenowicz.infrastructure.web.auth.dto.LoginRequest;
@@ -36,6 +31,14 @@ public class UserController {
                 new LoginCommand(req.username(), req.password())
         );
         return new AuthResponse(result.token());
+    }
+
+    @GetMapping("/search")
+    public PageResult<UserResult> searchUsers(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        return userService.searchUsers(query, page);
     }
 
 }

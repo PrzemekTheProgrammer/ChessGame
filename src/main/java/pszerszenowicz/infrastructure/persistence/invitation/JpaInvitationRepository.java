@@ -43,4 +43,12 @@ public class JpaInvitationRepository implements InvitationRepository {
     public void delete(InvitationId id) {
         jpa.deleteById(id.id());
     }
+
+    @Override
+    public List<GameInvitation> findReceivedByUser(UserId userId) {
+        return jpa.findByTo(userId.uuid())
+                .stream()
+                .map(mapper::toModel)
+                .toList();
+    }
 }

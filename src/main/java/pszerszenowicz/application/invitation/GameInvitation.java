@@ -84,16 +84,16 @@ public class GameInvitation {
         return colorChoice;
     }
 
-    public UserId resolveWhiteUser() {
-        return switch (colorChoice) {
+    public ResolvedColors resolveColors() {
+        UserId white = switch (colorChoice) {
             case INVITER_WHITE -> from;
             case INVITER_BLACK -> to;
             case RANDOM -> RandomColorResolver.pickWhite(from, to);
         };
-    }
 
-    public UserId resolveBlackUser() {
-        return resolveWhiteUser().equals(from) ? to : from;
+        UserId black = white.equals(from) ? to : from;
+
+        return new ResolvedColors(white, black);
     }
 
     private static class RandomColorResolver {
@@ -102,6 +102,12 @@ public class GameInvitation {
         static UserId pickWhite(UserId from, UserId to) {
             return random.nextBoolean() ? from : to;
         }
+    }
+
+    public record ResolvedColors(
+            UserId white,
+            UserId black
+    ) {
     }
 
 }
