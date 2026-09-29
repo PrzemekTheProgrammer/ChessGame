@@ -77,7 +77,8 @@ class InvitationControllerTest {
 
         mockMvc.perform(post("/api/invitations/{id}/accept", invId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.invitationId").value(gameId.id().toString()));
+                .andExpect(jsonPath("$.gameId")
+                        .value(gameId.id().toString()));
     }
 
     @Test

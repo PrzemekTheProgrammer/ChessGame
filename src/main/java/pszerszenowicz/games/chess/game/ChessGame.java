@@ -10,6 +10,8 @@ import pszerszenowicz.domain.ports.game.Game;
 import pszerszenowicz.domain.ports.game.Move;
 import pszerszenowicz.domain.ports.game.Player;
 import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.move.ChessMoveSnapshot;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.position.ChessPosition;
 import pszerszenowicz.games.chess.position.ZobristHasher;
@@ -19,7 +21,7 @@ import java.util.*;
 public class ChessGame implements Game {
 
     private final ChessBoard board;
-    private final List<ChessMove> moveHistory = new ArrayList<>();
+    private final List<ChessMoveSnapshot> moveHistory = new ArrayList<>();
     private Set<ChessMove> legalMoves;
     private ChessPosition position;
     private GameStatus gameStatus;
@@ -29,12 +31,21 @@ public class ChessGame implements Game {
     private final Map<Long, Integer> positionOccurrences = new HashMap<>();
 
     public ChessGame(Player white, Player black) {
+        this(GameId.random(), white, black);
+    }
+
+    public ChessGame(
+            GameId gameId,
+            Player white,
+            Player black
+    ) {
         this.board = new ChessBoard();
         this.white = Objects.requireNonNull(white);
         this.black = Objects.requireNonNull(black);
-        this.gameId = GameId.random();
+        this.gameId = Objects.requireNonNull(gameId);
         initGame();
     }
+
     public ChessGame(ChessGame chessGame) {
         this.board = new ChessBoard(chessGame.board);
         this.white = chessGame.white;
@@ -42,7 +53,7 @@ public class ChessGame implements Game {
         this.gameId = GameId.of(UUID.randomUUID());
         this.position = new ChessPosition(chessGame.position);
         this.gameStatus = chessGame.gameStatus;
-        this.legalMoves  = chessGame.legalMoves;
+        this.legalMoves = chessGame.legalMoves;
     }
 
     @Override
@@ -62,6 +73,7 @@ public class ChessGame implements Game {
         board.setBoard();
         gameStatus = GameStatus.ONGOING;
         position = new ChessPosition(board);
+        moveHistory.clear();
         positionOccurrences.clear();
         long hash = ZobristHasher.repetitionHash(position);
         positionOccurrences.put(hash, 1);
@@ -88,9 +100,77 @@ public class ChessGame implements Game {
         return p.equals(white) || p.equals(black);
     }
 
+    public ChessMove findLegalMove(
+            PieceCoordinate from,
+            PieceCoordinate to,
+            ChessMoveTags promotion
+    ) {
+        return ChessMoveResolver.resolve(
+                legalMoves,
+                from,
+                to,
+                promotion);
+    }
+
+    public ChessMove findLegalMove(
+            ChessMoveSnapshot chessMoveSnapshot
+    ) {
+        return ChessMoveResolver.resolve(
+                legalMoves,
+                chessMoveSnapshot
+        );
+    }
+
+    public ChessMove findLegalMove(ChessMove searchedMove) {
+        return legalMoves.stream()
+                .filter(move ->
+                        move.from().equals(searchedMove.from())
+                                && move.to().equals(searchedMove.to())
+                                && move.getTags().equals(searchedMove.getTags())
+                )
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Legal move not found: "
+                                        + searchedMove.from()
+                                        + " -> "
+                                        + searchedMove.to()
+                        )
+                );
+    }
+
+    public List<ChessMoveSnapshot> getMoveHistory() {
+        return moveHistory;
+    }
+
+    public PieceColor colorOf(Player player) {
+        if (player.equals(white)) return PieceColor.WHITE;
+        if (player.equals(black)) return PieceColor.BLACK;
+        throw new PlayerNotInGameException();
+    }
+
+    public Player playerOf(PieceColor pieceColor) {
+        if (pieceColor.equals(PieceColor.WHITE)) return white;
+        if (pieceColor.equals(PieceColor.BLACK)) return black;
+        throw new NullPointerException();
+    }
+
     private void executeMove(ChessMove move) {
         move.apply(position);
         addToHistory(move);
+    }
+
+    public void addToHistory(ChessMove move) {
+        moveHistory.add(ChessMoveSnapshot.from(move));
+    }
+
+    public void replay(List<ChessMoveSnapshot> history) {
+        for (ChessMoveSnapshot snapshot : history) {
+            Player player = playerOf(position.getSideToMove());
+            ChessMove move = findLegalMove(snapshot);
+
+            makeMove(move, player);
+        }
     }
 
     private void validateMove(ChessMove move) {
@@ -112,9 +192,6 @@ public class ChessGame implements Game {
         gameStatus = isThreefoldRepetition() ? GameStatus.STALEMATE : position.evaluateGameState();
     }
 
-    public void addToHistory(ChessMove move) {
-        moveHistory.add(move);
-    }
 
     private void validateTurn(Player player) {
         if (position.getSideToMove() != colorOf(player)) {
@@ -122,17 +199,6 @@ public class ChessGame implements Game {
         }
     }
 
-    public PieceColor colorOf(Player player) {
-        if (player.equals(white)) return PieceColor.WHITE;
-        if (player.equals(black)) return PieceColor.BLACK;
-        throw new PlayerNotInGameException();
-    }
-
-    public Player playerOf(PieceColor pieceColor) {
-        if (pieceColor.equals(PieceColor.WHITE)) return white;
-        if (pieceColor.equals(PieceColor.BLACK)) return black;
-        throw new NullPointerException();
-    }
 
     private void registerPosition() {
 
@@ -162,43 +228,28 @@ public class ChessGame implements Game {
         return positionOccurrences.getOrDefault(hash, 0) >= 3;
     }
 
-    public ChessMove findLegalMove(
-            PieceCoordinate from,
-            PieceCoordinate to
+    private boolean isPromotionTag(ChessMoveTags tag) {
+        return switch (tag) {
+            case PROMOTE_QUEEN,
+                 PROMOTE_ROOK,
+                 PROMOTE_BISHOP,
+                 PROMOTE_KNIGHT -> true;
+            default -> false;
+        };
+    }
+
+
+    private boolean promotionMatches(
+            ChessMove move,
+            ChessMoveTags promotion
     ) {
-        return legalMoves.stream()
-                .filter(move ->
-                        move.from().equals(from)
-                                && move.to().equals(to)
-                )
-                .findFirst()
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Legal move not found: "
-                                        + from + " -> " + to
-                        )
-                );
+        if (promotion != null) {
+            return move.hasTag(promotion);
+        }
+
+        return move.getTags()
+                .stream()
+                .noneMatch(this::isPromotionTag);
     }
 
-    public ChessMove findLegalMove(ChessMove searchedMove) {
-        return legalMoves.stream()
-                .filter(move ->
-                        move.from().equals(searchedMove.from())
-                                && move.to().equals(searchedMove.to())
-                                && move.getTags().equals(searchedMove.getTags())
-                )
-                .findFirst()
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Legal move not found: "
-                                        + searchedMove.from()
-                                        + " -> "
-                                        + searchedMove.to()
-                        )
-                );
-    }
-
-    public List<ChessMove> getMoveHistory() {
-        return moveHistory;
-    }
 }

@@ -3,13 +3,17 @@ package pszerszenowicz.infrastructure.web.game;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pszerszenowicz.application.game.GameListFilter;
 import pszerszenowicz.application.game.GameService;
 import pszerszenowicz.application.game.GameSummaryResult;
 import pszerszenowicz.application.game.PlayerColorChoice;
 import pszerszenowicz.domain.core.game.GameId;
 import pszerszenowicz.domain.core.user.UserId;
 import pszerszenowicz.games.chess.game.GameStatus;
+import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.infrastructure.security.CurrentUserProvider;
+import pszerszenowicz.infrastructure.web.history.GameHistoryMapper;
+import pszerszenowicz.infrastructure.web.history.GameHistoryResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,15 +25,18 @@ public class GameController {
     private final GameService gameService;
     private final CurrentUserProvider currentUser;
     private final GameStateMapper gameStateMapper;
+    private final GameHistoryMapper gameHistoryMapper;
 
     public GameController(
             GameService gameService,
             CurrentUserProvider currentUser,
-            GameStateMapper gameStateMapper
+            GameStateMapper gameStateMapper,
+            GameHistoryMapper gameHistoryMapper
     ) {
         this.gameService = gameService;
         this.currentUser = currentUser;
         this.gameStateMapper = gameStateMapper;
+        this.gameHistoryMapper = gameHistoryMapper;
     }
 
     @PostMapping("/bot")
@@ -63,8 +70,9 @@ public class GameController {
     ) {
         UserId userId = currentUser.get();
         GameId gameId = GameId.of(id);
-        return gameService.withGame(
+        return gameService.withGameForUser(
                 gameId,
+                userId,
                 game -> gameStateMapper.toResponse(
                         game,
                         userId
@@ -74,7 +82,7 @@ public class GameController {
 
     @GetMapping
     public List<GameSummaryResult> getGames(
-            @RequestParam GameStatus status
+            @RequestParam GameListFilter status
     ) {
         return gameService.findGamesByUser(
                 currentUser.get(),
@@ -82,4 +90,17 @@ public class GameController {
         );
     }
 
+    @GetMapping("/{id}/history")
+    public GameHistoryResponse getGameHistory(
+            @PathVariable UUID id
+    ) {
+        UserId userId = currentUser.get();
+        GameId gameId = GameId.of(id);
+
+        return gameService.withGameForUser(
+                gameId,
+                userId,
+                gameHistoryMapper::toResponse
+        );
+    }
 }

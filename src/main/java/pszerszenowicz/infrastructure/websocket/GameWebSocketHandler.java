@@ -17,6 +17,7 @@ import pszerszenowicz.domain.ports.game.Player;
 import pszerszenowicz.games.chess.game.ChessGame;
 import pszerszenowicz.games.chess.game.GameStatus;
 import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.move.ChessMoveTags;
 import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.infrastructure.web.game.GameStateMapper;
 import tools.jackson.databind.ObjectMapper;
@@ -123,7 +124,15 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         PieceCoordinate to =
                 ChessBoard.getCoordinate(request.to());
 
-        ChessMove move = game.findLegalMove(from, to);
+        ChessMoveTags promotion = request.promotion() == null
+                ? null
+                : ChessMoveTags.valueOf(request.promotion());
+
+        ChessMove move = game.findLegalMove(
+                from,
+                to,
+                promotion
+        );
 
         gameService.makeMove(gameId, move, player);
 

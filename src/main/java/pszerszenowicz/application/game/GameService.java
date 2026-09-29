@@ -16,6 +16,7 @@ import pszerszenowicz.domain.ports.game.Player;
 import pszerszenowicz.games.chess.game.ChessGame;
 import pszerszenowicz.games.chess.game.GameStatus;
 import pszerszenowicz.games.chess.move.ChessMove;
+import pszerszenowicz.games.chess.position.ChessBoard;
 import pszerszenowicz.games.chess.position.ChessPosition;
 import pszerszenowicz.domain.core.user.User;
 
@@ -91,11 +92,11 @@ public class GameService {
 
     public List<GameSummaryResult> findGamesByUser(
             UserId userId,
-            GameStatus status
+            GameListFilter filter
     ) {
         return repo.findByUserId(userId)
                 .stream()
-                .filter(game -> game.getStatus() == status)
+                .filter(game -> matchesFilter(game, filter))
                 .map(game -> toSummary(game, userId))
                 .toList();
     }
@@ -153,6 +154,49 @@ public class GameService {
         } finally {
             lock.unlock();
         }
+    }
+
+    public <T> T withGameForUser(
+            GameId id,
+            UserId userId,
+            Function<ChessGame, T> operation
+    ) {
+        return withGame(id, game -> {
+            if (!hasUser(game, userId)) {
+                throw new GameNotFoundException();
+            }
+
+            return operation.apply(game);
+        });
+    }
+
+    private boolean matchesFilter(
+            ChessGame game,
+            GameListFilter filter
+    ) {
+        return switch (filter) {
+            case ONGOING ->
+                    game.getStatus() == GameStatus.ONGOING;
+
+            case FINISHED ->
+                    game.getStatus() != GameStatus.ONGOING;
+        };
+    }
+
+    private boolean hasUser(
+            ChessGame game,
+            UserId userId
+    ) {
+        return isUser(game.playerOf(PieceColor.WHITE), userId)
+                || isUser(game.playerOf(PieceColor.BLACK), userId);
+    }
+
+    private boolean isUser(
+            Player player,
+            UserId userId
+    ) {
+        return player instanceof HumanPlayer human
+                && human.getUserId().equals(userId);
     }
 
     private GameSummaryResult toSummary(
